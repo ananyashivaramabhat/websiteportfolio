@@ -123,12 +123,55 @@
     loadGitHub();
   }
 
-  /* home: little techie girl who walks across the name and points at the photo */
+  /* home: little techie girl who walks across the name, points, then jumps onto the photo */
+  var FACE = {"E": [330, 292, 536, 330], "M": [308, 286, 558, 476], "img": {"lookr": "face-lookr.webp", "ul": "face-ul.webp", "up": "face-up.webp", "ur": "face-ur.webp", "smile": "face-smile.webp"}};
+  function stagePhoto(photo) {
+    var img = $('img', photo);
+    if (!img || $('.hp-stage', photo)) return $('.hp-stage', photo);
+    var st = document.createElement('div');
+    st.className = 'hp-stage';
+    photo.insertBefore(st, img);
+    st.appendChild(img);
+    var IW = 896, IH = 833;
+    function fx(b, k) { return (b[k] / (k % 2 ? IH : IW) * 100) + '%'; }
+    function addFrame(key, box) {
+      var f = document.createElement('img');
+      f.className = 'hp-face hp-' + key;
+      f.alt = '';
+      f.onerror = function () { f.remove(); };
+      f.src = FACE.img[key];
+      f.style.left = (box[0] / IW * 100) + '%';
+      f.style.top = (box[1] / IH * 100) + '%';
+      f.style.width = ((box[2] - box[0]) / IW * 100) + '%';
+      f.style.height = ((box[3] - box[1]) / IH * 100) + '%';
+      st.appendChild(f);
+    }
+    ['lookr', 'ul', 'up', 'ur'].forEach(function (k) { addFrame(k, FACE.E); });
+    addFrame('smile', FACE.M);
+    function fit() {
+      var cw = photo.clientWidth, ch = photo.clientHeight;
+      var s = Math.max(cw / IW, ch / IH), w = IW * s, h = IH * s;
+      var pos = (getComputedStyle(img).objectPosition || '50% 8%').split(' ');
+      var px = parseFloat(pos[0]) / 100, py = parseFloat(pos[1] || '50%') / 100;
+      if (isNaN(px)) px = 0.5; if (isNaN(py)) py = 0.08;
+      st.style.width = w + 'px'; st.style.height = h + 'px';
+      st.style.left = (cw - w) * px + 'px'; st.style.top = (ch - h) * py + 'px';
+    }
+    photo.classList.add('staged');
+    fit();
+    window.addEventListener('resize', fit);
+    return st;
+  }
+  function faceShow(key) {
+    $all('.hp-face').forEach(function (f) { f.classList.toggle('on', f.classList.contains('hp-' + key)); });
+  }
+
   function initNerd() {
     var inner = $('.hero-inner'), h1 = $('.hero h1'), photo = $('.hero-photo');
     if (!inner || !h1 || !photo || !window.Element.prototype.animate) return;
     var spans = $all('.hero h1 .line span');
     if (spans.length < 2) return;
+    var stage = stagePhoto(photo);
     var el = document.createElement('div');
     el.className = 'nerd';
     el.setAttribute('aria-hidden', 'true');
@@ -156,52 +199,71 @@
         '<g class="n-arm n-arm-f"><rect x="19" y="28" width="4" height="13" rx="2" fill="#2B86FF"/><circle cx="21" cy="41.5" r="2.2" fill="#C98C62"/><rect class="n-finger" x="20.3" y="42" width="1.5" height="4.2" rx=".75" fill="#C98C62"/></g>' +
       '</svg></div>';
     inner.appendChild(el);
+    var bubble = $('.nerd-bubble', el);
 
     var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var scale = 1, path = null;
+    var scale = 1, perched = false, timers = [], raf = 0;
 
+    function nat(x, y) {
+      var ir = inner.getBoundingClientRect(), sr = stage.getBoundingClientRect();
+      return { x: sr.left - ir.left + x / 896 * sr.width, y: sr.top - ir.top + y / 833 * sr.height };
+    }
+    function shoulder() {
+      var ir = inner.getBoundingClientRect(), pr = photo.getBoundingClientRect();
+      var cands = [[785, 646], [700, 598], [640, 598]];
+      for (var i = 0; i < cands.length; i++) {
+        var p = nat(cands[i][0], cands[i][1]);
+        if (p.x + ir.left > pr.left + 26 && p.x + ir.left < pr.right - 26) return p;
+      }
+      return nat(cands[cands.length - 1][0], cands[cands.length - 1][1]);
+    }
     function geom() {
       var ir = inner.getBoundingClientRect();
       var fs = parseFloat(getComputedStyle(h1).fontSize);
       scale = Math.max(0.85, Math.min(1.6, fs / 60));
       var r1 = spans[0].getBoundingClientRect(), r2 = spans[1].getBoundingClientRect();
       var cap = fs * 0.27;
-      var pr = photo.getBoundingClientRect();
       return {
         s: scale,
         a: { x: r1.left - ir.left + fs * 0.62, y: r1.top - ir.top + cap },
         b: { x: r1.right - ir.left - 8 * scale, y: r1.top - ir.top + cap },
         c: { x: Math.min(r1.right + fs * 0.9, r2.right - fs) - ir.left, y: r2.top - ir.top + cap },
         d: { x: r2.right - ir.left - fs * 0.16, y: r2.top - ir.top + fs * 0.2 },
-        face: { x: pr.left - ir.left + pr.width * 0.52, y: pr.top - ir.top + pr.height * (pr.width < 600 ? 0.42 : 0.38) }
+        face: nat(430, 318)
       };
     }
-    function place(p, flip) {
-      el.style.transform = 'translate(' + p.x.toFixed(1) + 'px,' + p.y.toFixed(1) + 'px) scale(' + scale + ')';
-    }
-    function aimAt(g) {
-      var dx = g.face.x - (g.d.x + 6 * g.s), dy = g.face.y - (g.d.y - 29 * g.s);
+    function tf(p, rot) { return 'translate(' + p.x.toFixed(1) + 'px,' + p.y.toFixed(1) + 'px) scale(' + scale + ')' + (rot ? ' rotate(' + rot + 'deg)' : ''); }
+    function place(p) { el.style.transform = tf(p); }
+    function aim(from, to) {
+      var dx = to.x - (from.x + 6 * scale), dy = to.y - (from.y - 29 * scale);
       var ang = Math.max(-58, Math.atan2(dy, Math.abs(dx)) * 180 / Math.PI);
       el.style.setProperty('--aim', (ang - 90).toFixed(1) + 'deg');
       el.classList.toggle('aim-left', dx < 0);
     }
-    function settle() {
-      var g = geom();
-      el.classList.remove('walking', 'sliding', 'hop');
-      el.classList.add('pointing', 'done');
-      place(g.d);
-      aimAt(g);
+    function say(t, ms) { bubble.textContent = t; el.classList.toggle('bubble-left', el.getBoundingClientRect().right > window.innerWidth - 150); el.classList.add('talk'); if (ms) later(function () { el.classList.remove('talk'); }, ms); }
+    function later(fn, ms) { timers.push(setTimeout(fn, ms)); }
+    function wait(ms) { return new Promise(function (r) { later(r, ms); }); }
+    function stopAll() { timers.forEach(clearTimeout); timers = []; cancelAnimationFrame(raf); perched = false; el.getAnimations().forEach(function (a) { a.cancel(); }); faceShow(''); }
+    function glue() {
+      if (!perched) return;
+      place(shoulder());
+      raf = requestAnimationFrame(glue);
     }
-    function tf(p) { return 'translate(' + p.x + 'px,' + p.y + 'px) scale(' + scale + ')'; }
+    function endState() {
+      var g = geom();
+      el.className = 'nerd done';
+      el.style.opacity = 1;
+      perched = true; glue();
+      el.classList.remove('aim-left');
+    }
 
     function run() {
+      stopAll();
       var g = geom();
-      el.classList.remove('pointing', 'done', 'talk', 'aim-left');
+      el.className = 'nerd walking';
       el.style.opacity = 1;
       place(g.a);
-      el.classList.add('walking');
       var walkMs = Math.max(1400, (g.b.x - g.a.x) * 6.5);
-      var mid = { x: (g.b.x + g.c.x) / 2, y: Math.min(g.b.y, g.c.y) - 26 * g.s };
       el.animate([{ transform: tf(g.a), opacity: 0 }, { transform: tf({ x: g.a.x + 18, y: g.a.y }), opacity: 1, offset: 0.08 }, { transform: tf(g.b), opacity: 1 }], { duration: walkMs, easing: 'linear', fill: 'forwards' }).finished
         .then(function () {
           el.classList.remove('walking'); el.classList.add('sliding');
@@ -212,16 +274,54 @@
         })
         .then(function () {
           el.getAnimations().forEach(function (a) { a.cancel(); });
-          settle();
-          setTimeout(function () { el.classList.add('talk'); }, 350);
-          setTimeout(function () { el.classList.remove('talk'); }, 4200);
-        });
+          el.className = 'nerd pointing';
+          place(g.d); aim(g.d, g.face);
+          later(function () { say('that\u2019s her!'); }, 300);
+          return wait(2300);
+        })
+        .then(function () {
+          el.classList.remove('talk');
+          var from = geom().d, to = shoulder();
+          el.className = 'nerd crouch';
+          return wait(260).then(function () {
+            el.className = 'nerd flying';
+            var peak = { x: (from.x + to.x) / 2, y: Math.min(from.y, to.y) - Math.max(120, Math.abs(from.x - to.x) * 0.55) };
+            var frames = [], N = 12;
+            for (var i = 0; i <= N; i++) {
+              var t = i / N, u = 1 - t;
+              var p = { x: u * u * from.x + 2 * u * t * peak.x + t * t * to.x, y: u * u * from.y + 2 * u * t * peak.y + t * t * to.y };
+              frames.push({ transform: tf(p, (to.x < from.x ? -360 : 360) * Math.min(1, t * 1.15)) });
+            }
+            return el.animate(frames, { duration: 1100, easing: 'cubic-bezier(.35,.1,.5,1)', fill: 'forwards' }).finished;
+          });
+        })
+        .then(function () {
+          el.getAnimations().forEach(function (a) { a.cancel(); });
+          perched = true; glue();
+          el.className = 'nerd land';
+          return wait(380);
+        })
+        .then(function () {
+          el.className = 'nerd perched pointing';
+          aim(shoulder(), geom().face);
+          say('hi Ananya!', 1300);
+          return wait(700);
+        })
+        .then(function () { faceShow('lookr'); return wait(650); })
+        .then(function () { faceShow('ur'); return wait(140); })
+        .then(function () { faceShow('up'); return wait(260); })
+        .then(function () { faceShow('ul'); return wait(150); })
+        .then(function () { faceShow('up'); return wait(120); })
+        .then(function () { faceShow(''); say('rude.', 1100); return wait(900); })
+        .then(function () { faceShow('smile'); el.classList.add('happy'); return wait(1500); })
+        .then(function () { faceShow(''); el.classList.remove('happy'); return wait(300); })
+        .then(endState);
     }
 
-    el.addEventListener('click', function () { if (el.classList.contains('done')) { el.classList.remove('talk'); run(); } });
-    window.addEventListener('resize', function () { if (el.classList.contains('done')) settle(); });
-    if (reduced) { setTimeout(function () { el.style.opacity = 1; settle(); }, 300); return; }
-    var go = function () { setTimeout(run, 1400); };
+    el.addEventListener('click', function () { run(); });
+    window.addEventListener('resize', function () { if (el.classList.contains('done')) place(shoulder()); });
+    if (reduced) { later(function () { el.style.opacity = 1; el.className = 'nerd done'; perched = true; glue(); }, 300); return; }
+    var go = function () { later(run, 1400); };
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(go); else go();
   }
 
