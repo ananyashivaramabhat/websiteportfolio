@@ -495,3 +495,21 @@ main{overflow-x:clip}
 @keyframes nidle{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.2px)}}
 @keyframes nblink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
 @media (max-width:820px){.nerd-bubble{left:auto;right:calc(100% + 4px);bottom:58%;transform:translateX(6px) scale(.9);font-size:11px;padding:6px 9px}.nerd.talk .nerd-bubble{transform:none}.nerd-bubble::after{left:auto;right:-9px;top:50%;margin-top:-5px;border-top-color:transparent;border-left-color:#F2F4FA}}
+
+/* hero photo stage + face frames */
+.hp-stage{position:absolute;transform-origin:50% 40%}
+.hp-stage img{position:absolute;inset:0;width:100%;height:100%}
+.hero-photo.staged.loaded img{animation:none}
+.hero-photo.staged.loaded .hp-stage{animation:kb 32s ease-in-out 2.4s infinite alternate}
+.hero-photo .hp-stage img.hp-face{position:absolute;inset:auto;opacity:0;transform:none;transition:opacity .08s linear;pointer-events:none;-webkit-mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent),linear-gradient(180deg,transparent,#000 10%,#000 90%,transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent),linear-gradient(180deg,transparent,#000 10%,#000 90%,transparent);mask-composite:intersect}
+.hero-photo.loaded .hp-stage img.hp-face.on{opacity:1}
+.nerd.flying{transform-origin:20px 34px}
+.nerd.flying .n-leg-f{transform:rotate(-40deg)}.nerd.flying .n-leg-b{transform:rotate(30deg)}
+.nerd.flying .n-arm-f{transform:rotate(-160deg)}.nerd.flying .n-arm-b{transform:rotate(160deg)}
+.nerd.crouch svg{transform:scaleY(.82);transform-origin:20px 58px;transition:transform .2s}
+.nerd.land svg{animation:nland .38s ease-out}
+.nerd.happy svg{animation:nhop .42s ease-in-out 3}
+@keyframes nland{0%{transform:scaleY(.78) scaleX(1.12)}60%{transform:scaleY(1.06) scaleX(.96)}100%{transform:none}}
+@keyframes nhop{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.nerd.bubble-left .nerd-bubble{left:auto;right:calc(100% + 4px);bottom:58%;transform:translateX(6px) scale(.9)}.nerd.bubble-left.talk .nerd-bubble{transform:none}.nerd.bubble-left .nerd-bubble::after{left:auto;right:-9px;top:50%;margin-top:-5px;border-top-color:transparent;border-left-color:#F2F4FA}
+.nerd.aim-left.bubble-left .nerd-bubble{right:calc(100% + 4px)}
