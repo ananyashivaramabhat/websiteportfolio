@@ -426,6 +426,11 @@
     ],
     "enclosure": [
       {
+        "src": "img-ambientrx-final-assembly.jpg",
+        "caption": "Final build with the electronics inside the enclosure",
+        "wide": true
+      },
+      {
         "src": "img-ambientrx-enclosure-1.jpg",
         "caption": "Enclosure, top",
         "tall": true
