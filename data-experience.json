@@ -1,0 +1,145 @@
+{
+  "jobs": [
+    {
+      "org": "Xscape Photonics",
+      "role": "Firmware Engineering Intern",
+      "when": "May 2026 – Present",
+      "where": "Santa Clara, CA",
+      "points": [
+        "Bare-metal C control firmware on STM32 for silicon photonic engines: microrings, MZI and bandpass filters, SOAs, TECs, comb lasers and photodiodes.",
+        "Architected the secure bootloader from scratch: dual application banks, encrypted images, run/commit tracking and automatic rollback.",
+        "CMIS 5.3 CDB firmware update in LPL and EPL modes as I2C state machines, plus Python host tooling.",
+        "Drivers for I2C, SPI, UART, ADC, DAC, GPIO and timers under a cooperative scheduler; ASIC silicon and board bring-up.",
+        "Closed-loop control and production calibration with per-unit coefficients stored in flash."
+      ]
+    },
+    {
+      "org": "Siemens Advanta",
+      "role": "Embedded Systems Intern",
+      "when": "Aug 2024 – Apr 2025",
+      "where": "Bengaluru, India",
+      "points": [
+        "Profiled HMI runtime firmware on multi-core ARM SoCs (including Qualcomm) with ftrace, perf and kernel-level instrumentation, cutting touch-to-render latency by 15 ms.",
+        "Built reproducible embedded Linux images across 4 hardware platforms with containerized toolchains and BSP layers.",
+        "Brought up remote debug and display channels with Wayland/Weston and TigerVNC/TightVNC on headless boards.",
+        "Validated Modbus RTU/TCP between PLC and HMI nodes across 3 hardware revisions."
+      ]
+    },
+    {
+      "org": "Nokia",
+      "role": "Embedded Validation Intern",
+      "when": "Apr 2024 – Oct 2024",
+      "where": "Bengaluru, India",
+      "points": [
+        "Built a Python pipeline translating XML configuration into executable CLI commands, cutting manual configuration time by 87.5%.",
+        "Designed a schema-driven unit test framework for the generated commands and sped up large-file XML validation by 25%.",
+        "Automated firmware integration testing in Python and MATLAB, cutting regression cycles from 8 hours to under 1."
+      ]
+    },
+    {
+      "org": "CeNSE, Indian Institute of Science",
+      "role": "Research Intern · Prof. Akshay Naik",
+      "when": "Mar 2024",
+      "where": "Bengaluru, India",
+      "points": [
+        "Characterized Si3N4 microcantilever resonators, identifying a 430 kHz resonance and peak splitting above 400 mV actuation.",
+        "Operated an MSA-500 LDV, vacuum microprobe station, Pfeiffer turbo pumps and MFLI and SR844 lock-in amplifiers.",
+        "Findings contributed to 2 new sensor design hypotheses."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "school": "University of Pennsylvania",
+      "degree": "M.S.E., Electrical and Systems Engineering",
+      "when": "2025 – 2027"
+    },
+    {
+      "school": "B.M.S. College of Engineering",
+      "degree": "B.E., Electronics and Communication Engineering",
+      "when": "2021 – 2025"
+    }
+  ],
+  "publications": [
+    {
+      "title": "Near Memory Computation on Basys3 FPGA",
+      "venue": "IEEE",
+      "year": "2024"
+    },
+    {
+      "title": "Segregation of Plastic Wastes by Electrical Properties",
+      "venue": "IEEE",
+      "year": "2023"
+    }
+  ],
+  "skills": {
+    "Languages": [
+      "C",
+      "C++",
+      "Python",
+      "MATLAB",
+      "SystemVerilog",
+      "Verilog",
+      "Bash"
+    ],
+    "Embedded": [
+      "ARM Cortex-M/A (STM32)",
+      "RISC-V (Spike)",
+      "Bare-metal drivers",
+      "ISRs",
+      "Memory-mapped registers",
+      "State machines",
+      "Cooperative scheduling",
+      "FreeRTOS",
+      "CMSIS-RTOS2",
+      "DMA"
+    ],
+    "Boot and Update": [
+      "Dual-bank bootloaders",
+      "Encrypted images",
+      "Rollback",
+      "CMIS 5.3 CDB (LPL/EPL)",
+      "HTTP OTA"
+    ],
+    "Buses": [
+      "I2C",
+      "SPI",
+      "UART",
+      "USB",
+      "ADC",
+      "DAC",
+      "PWM",
+      "Modbus RTU/TCP",
+      "MQTT"
+    ],
+    "Control and Bring-Up": [
+      "PID and feedback control",
+      "Silicon and board bring-up",
+      "Production calibration"
+    ],
+    "Tools": [
+      "Git",
+      "Make",
+      "arm-none-eabi-gcc",
+      "Linker scripts",
+      "STM32CubeIDE",
+      "Altium",
+      "Verilator",
+      "cocotb",
+      "Vivado",
+      "Linux"
+    ],
+    "Debug and Lab": [
+      "Oscilloscope",
+      "Logic analyzer",
+      "SWD",
+      "JTAG",
+      "GDB",
+      "perf",
+      "OSA",
+      "Optical power meter",
+      "Lock-in amplifier",
+      "DMM"
+    ]
+  }
+}

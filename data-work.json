@@ -1,0 +1,230 @@
+{
+  "experience": [
+    {
+      "id": "xscape",
+      "org": "Xscape Photonics",
+      "role": "Firmware Engineering Intern",
+      "when": "May 2026 – Present",
+      "year": "2026",
+      "where": "Santa Clara, CA",
+      "summary": "Bare-metal C firmware on STM32 for silicon photonic engines, from the bootloader and update path to drivers, bring-up, control loops and production calibration.",
+      "stack": [
+        "STM32",
+        "Bare-metal C",
+        "Linker scripts",
+        "arm-none-eabi-gcc",
+        "CMIS 5.3",
+        "I2C",
+        "SPI",
+        "Python"
+      ],
+      "highlights": [
+        {
+          "title": "Secure bootloader",
+          "visual": "memmap",
+          "points": [
+            "Architected and built the bootloader from scratch.",
+            "Flash memory map and custom linker scripts partitioning the bootloader and dual application banks.",
+            "Encrypted firmware images authenticated and decrypted at boot.",
+            "Run/commit state tracking with automatic rollback to the last known-good image, and vector table relocation on jump to application."
+          ]
+        },
+        {
+          "title": "CMIS 5.3 CDB firmware update",
+          "visual": "bus",
+          "points": [
+            "LPL and EPL CDB modes implemented as I2C state machines with error handling.",
+            "Python host tooling validated against switch host software."
+          ]
+        },
+        {
+          "title": "Drivers and silicon bring-up",
+          "points": [
+            "Bare-metal I2C, SPI, UART, ADC, DAC, GPIO and timer drivers under a cooperative scheduler.",
+            "Owned ASIC silicon and STM32 board bring-up on a CMIS 5.3 ELSFP module with dedicated bring-up firmware, debugging hardware and firmware interactions.",
+            "UART fault logging, and sweeps streamed through a firmware ring buffer over I2C."
+          ],
+          "visual": "drivers"
+        },
+        {
+          "title": "Closed-loop device control",
+          "visual": "loop",
+          "points": [
+            "Control firmware for silicon nitride microring resonators, MZI and bandpass filters, SOAs, TECs, comb lasers and photodiodes.",
+            "Microring resonance tuning and cascaded MZI mesh tuning: hill-climbing and gradient bias search, butterfly sweeps, hysteresis-based extremum detection.",
+            "Comb-laser power equalization, SOA and laser bias control, and a thermistor-feedback TEC loop with case-temperature monitoring and CMIS alarm and warning thresholds."
+          ]
+        },
+        {
+          "title": "Production calibration",
+          "points": [
+            "Calibration carried from bring-up through to production.",
+            "ADC/DAC code-to-SI conversions derived from PCB schematics and layout, and photodiode tap-ratio calibration.",
+            "Per-unit coefficients stored in flash and self-applied at boot."
+          ],
+          "visual": "calib"
+        }
+      ]
+    },
+    {
+      "id": "siemens",
+      "org": "Siemens Advanta",
+      "role": "Embedded Systems Intern",
+      "when": "Aug 2024 – Apr 2025",
+      "year": "2024",
+      "where": "Bengaluru, India",
+      "summary": "Embedded Linux firmware for HMI products on multi-core ARM SoCs: profiling and latency, reproducible platform images, remote debug channels and industrial protocol validation.",
+      "stack": [
+        "Embedded Linux",
+        "ARM SoCs (Qualcomm)",
+        "ftrace",
+        "perf",
+        "Kernel instrumentation",
+        "BSP layers",
+        "Containers",
+        "Wayland/Weston",
+        "VNC",
+        "Modbus RTU/TCP"
+      ],
+      "highlights": [
+        {
+          "title": "HMI performance profiling",
+          "visual": "latency",
+          "points": [
+            "Profiled HMI runtime firmware on multi-core ARM SoCs, including Qualcomm platforms, using ftrace, perf and custom kernel-level instrumentation.",
+            "Isolated scheduling, IPC and rendering bottlenecks across the embedded Linux stack.",
+            "Drove low-level architecture decisions that cut touch-to-render latency by 15 ms (about 20%), including removing a redundant compositor sync."
+          ]
+        },
+        {
+          "title": "Reproducible platform images",
+          "points": [
+            "Built reproducible embedded Linux deployment images for HMI firmware across 4 hardware platforms using containerized toolchains and BSP layers.",
+            "Improved cross-platform portability of board-specific drivers, init scripts and runtime services."
+          ],
+          "visual": "imagestack"
+        },
+        {
+          "title": "Remote debug and display bring-up",
+          "points": [
+            "Brought up secure remote debug and display channels on embedded targets by configuring Wayland/Weston compositors and VNC servers (TigerVNC, TightVNC).",
+            "Enabled over-the-network access to headless boards for firmware bring-up, validation and field debugging."
+          ],
+          "visual": "remote"
+        },
+        {
+          "title": "Protocol validation",
+          "points": [
+            "Validated Modbus RTU/TCP between PLC and HMI nodes to full compliance across 3 hardware revisions."
+          ],
+          "visual": "modbus"
+        }
+      ]
+    },
+    {
+      "id": "nokia",
+      "org": "Nokia",
+      "role": "Embedded Validation Intern",
+      "when": "Apr 2024 – Oct 2024",
+      "year": "2024",
+      "where": "Bengaluru, India",
+      "summary": "Python automation and test infrastructure for network firmware configuration and multi-node hardware validation.",
+      "stack": [
+        "Python",
+        "XML / XSD schemas",
+        "CLI generation",
+        "Unit testing",
+        "MATLAB"
+      ],
+      "highlights": [
+        {
+          "title": "XML to CLI automation",
+          "visual": "xmlcli",
+          "points": [
+            "Developed a Python pipeline that translates complex XML configuration data into executable CLI commands, reducing manual configuration time by 87.5%.",
+            "Engineered parsing and validation for large XML files against predefined schemas, improving validation throughput by 25%."
+          ]
+        },
+        {
+          "title": "Schema-driven test framework",
+          "points": [
+            "Designed and built a schema-driven unit test framework that automatically verifies and validates the generated CLI commands."
+          ],
+          "visual": "tests"
+        },
+        {
+          "title": "Integration test automation",
+          "visual": "regress",
+          "points": [
+            "Built an automated firmware integration test framework in Python and MATLAB for multi-node hardware validation, cutting regression cycles from 8 hours to under 1 hour."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cense",
+      "org": "CeNSE, Indian Institute of Science",
+      "role": "Research Intern · Prof. Akshay Naik",
+      "when": "Mar 2024",
+      "year": "2024",
+      "where": "Bengaluru, India",
+      "summary": "Mechanical characterization of silicon nitride microcantilever resonators for MEMS sensing, using piezoelectric actuation and laser Doppler vibrometry.",
+      "stack": [
+        "Polytec MSA-500 LDV",
+        "Microprobe Station (vacuum)",
+        "Pfeiffer turbo pumps",
+        "Zurich MFLI lock-in",
+        "SRS SR844 lock-in",
+        "MATLAB"
+      ],
+      "highlights": [
+        {
+          "title": "Instrumentation",
+          "images": [
+            {
+              "src": "img-cense-msa-500.jpg",
+              "caption": "Polytec MSA-500 Micro System Analyzer",
+              "narrow": true
+            }
+          ],
+          "points": [
+            "Operated an MSA-500 laser Doppler vibrometer, a vacuum microprobe station, Pfeiffer turbo pumps, and both Zurich Instruments MFLI and SRS SR844 lock-in amplifiers for precise signal detection.",
+            "Passed the facility drive test for independent access to the instruments."
+          ]
+        },
+        {
+          "title": "Resonator characterization",
+          "images": [
+            {
+              "src": "img-cense-lab-setup.jpg",
+              "caption": "Measurement setup in the CeNSE lab",
+              "wide": true
+            }
+          ],
+          "points": [
+            "Characterized Si3N4 microcantilever resonators and identified a 430 kHz resonance frequency.",
+            "Observed resonance peak splitting at actuation voltages above 400 mV, marking the move from linear to nonlinear behavior.",
+            "Analyzed amplitude, displacement and phase against frequency in MATLAB, including 3D views across actuation voltage."
+          ]
+        },
+        {
+          "title": "Outcome",
+          "visual": "peaksplit",
+          "points": [
+            "Revealed critical nonlinear device behaviors that contributed to 2 new sensor design hypotheses for future precision-sensing R&D."
+          ]
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "ambientrx",
+      "org": "AmbientRx",
+      "role": "ESE 5160, University of Pennsylvania",
+      "year": "2026",
+      "award": "Lutron Best Project Award",
+      "page": "ambientrx.html"
+    }
+  ]
+}
