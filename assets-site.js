@@ -119,7 +119,110 @@
       }
     }
 
+    initNerd();
     loadGitHub();
+  }
+
+  /* home: little techie girl who walks across the name and points at the photo */
+  function initNerd() {
+    var inner = $('.hero-inner'), h1 = $('.hero h1'), photo = $('.hero-photo');
+    if (!inner || !h1 || !photo || !window.Element.prototype.animate) return;
+    var spans = $all('.hero h1 .line span');
+    if (spans.length < 2) return;
+    var el = document.createElement('div');
+    el.className = 'nerd';
+    el.setAttribute('aria-hidden', 'true');
+    el.innerHTML =
+      '<div class="nerd-bubble mono">that’s her!</div>' +
+      '<div class="nerd-flip"><svg viewBox="0 0 40 62" width="40" height="62">' +
+        '<g class="n-leg n-leg-b"><rect x="17" y="40" width="4.4" height="15" rx="2" fill="#1B2350"/><rect x="15.6" y="53.5" width="7.4" height="4.6" rx="2.2" fill="#E9EDF7"/></g>' +
+        '<g class="n-arm n-arm-b"><rect x="18" y="28" width="4" height="12" rx="2" fill="#1666D6"/><circle cx="20" cy="40.5" r="2.1" fill="#C98C62"/></g>' +
+        '<g class="n-leg n-leg-f"><rect x="19" y="40" width="4.4" height="15" rx="2" fill="#2A3258"/><rect x="18.6" y="53.5" width="7.4" height="4.6" rx="2.2" fill="#F2F4FA"/></g>' +
+        '<path d="M11.5 31.5C11.5 27 15 25 20.5 25S29.5 27 29.5 31.5V40.5C29.5 42 28.5 43 27 43H14C12.5 43 11.5 42 11.5 40.5Z" fill="#1E7BFF"/>' +
+        '<path d="M15.5 36.5H25.5" stroke="#0F4DB0" stroke-width="1.2" stroke-linecap="round"/>' +
+        '<text x="20.5" y="35" text-anchor="middle" font-family="Geist Mono, monospace" font-size="4.6" fill="#DCE8FF">{ }</text>' +
+        '<g class="n-head">' +
+          '<path d="M10.5 17.5C10.5 8 30.5 8 30.5 17.5C30.5 22 29 25.5 27 27H14C12 25.5 10.5 22 10.5 17.5Z" fill="#1C1412"/>' +
+          '<circle cx="31" cy="12.5" r="3.6" fill="#1C1412"/>' +
+          '<ellipse cx="20.5" cy="17.5" rx="7.6" ry="8" fill="#C98C62"/>' +
+          '<path d="M12.6 15.5C13 9.5 18 8 21.5 8.5C26 9 29 12 28.6 15.5C25.5 12.5 18 12 12.6 15.5Z" fill="#1C1412"/>' +
+          '<g class="n-eyes" fill="#1A1A22"><circle cx="17.6" cy="18.2" r="1"/><circle cx="23.6" cy="18.2" r="1"/></g>' +
+          '<g fill="rgba(255,255,255,.22)" stroke="#0A0A10" stroke-width="1.1"><circle cx="17.6" cy="18.2" r="2.7"/><circle cx="23.6" cy="18.2" r="2.7"/></g>' +
+          '<path d="M20.3 18.2H20.9" stroke="#0A0A10" stroke-width="1.1"/>' +
+          '<path class="n-mouth" d="M18.8 22.6Q20.6 24 22.4 22.6" fill="none" stroke="#6E3424" stroke-width="0.9" stroke-linecap="round"/>' +
+          '<path d="M11.4 18.5C11.4 6.8 29.8 6.8 29.8 18.5" fill="none" stroke="#1E7BFF" stroke-width="1.9" stroke-linecap="round"/>' +
+          '<rect x="8.9" y="15.6" width="4.2" height="7" rx="2" fill="#1E7BFF"/><rect x="28.1" y="15.6" width="4.2" height="7" rx="2" fill="#1E7BFF"/>' +
+        '</g>' +
+        '<g class="n-arm n-arm-f"><rect x="19" y="28" width="4" height="13" rx="2" fill="#2B86FF"/><circle cx="21" cy="41.5" r="2.2" fill="#C98C62"/><rect class="n-finger" x="20.3" y="42" width="1.5" height="4.2" rx=".75" fill="#C98C62"/></g>' +
+      '</svg></div>';
+    inner.appendChild(el);
+
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var scale = 1, path = null;
+
+    function geom() {
+      var ir = inner.getBoundingClientRect();
+      var fs = parseFloat(getComputedStyle(h1).fontSize);
+      scale = Math.max(0.85, Math.min(1.6, fs / 60));
+      var r1 = spans[0].getBoundingClientRect(), r2 = spans[1].getBoundingClientRect();
+      var cap = fs * 0.27;
+      var pr = photo.getBoundingClientRect();
+      return {
+        s: scale,
+        a: { x: r1.left - ir.left + fs * 0.62, y: r1.top - ir.top + cap },
+        b: { x: r1.right - ir.left - 8 * scale, y: r1.top - ir.top + cap },
+        c: { x: Math.min(r1.right + fs * 0.9, r2.right - fs) - ir.left, y: r2.top - ir.top + cap },
+        d: { x: r2.right - ir.left - fs * 0.16, y: r2.top - ir.top + fs * 0.2 },
+        face: { x: pr.left - ir.left + pr.width * 0.52, y: pr.top - ir.top + pr.height * (pr.width < 600 ? 0.42 : 0.38) }
+      };
+    }
+    function place(p, flip) {
+      el.style.transform = 'translate(' + p.x.toFixed(1) + 'px,' + p.y.toFixed(1) + 'px) scale(' + scale + ')';
+    }
+    function aimAt(g) {
+      var dx = g.face.x - (g.d.x + 6 * g.s), dy = g.face.y - (g.d.y - 29 * g.s);
+      var ang = Math.max(-58, Math.atan2(dy, Math.abs(dx)) * 180 / Math.PI);
+      el.style.setProperty('--aim', (ang - 90).toFixed(1) + 'deg');
+      el.classList.toggle('aim-left', dx < 0);
+    }
+    function settle() {
+      var g = geom();
+      el.classList.remove('walking', 'sliding', 'hop');
+      el.classList.add('pointing', 'done');
+      place(g.d);
+      aimAt(g);
+    }
+    function tf(p) { return 'translate(' + p.x + 'px,' + p.y + 'px) scale(' + scale + ')'; }
+
+    function run() {
+      var g = geom();
+      el.classList.remove('pointing', 'done', 'talk', 'aim-left');
+      el.style.opacity = 1;
+      place(g.a);
+      el.classList.add('walking');
+      var walkMs = Math.max(1400, (g.b.x - g.a.x) * 6.5);
+      var mid = { x: (g.b.x + g.c.x) / 2, y: Math.min(g.b.y, g.c.y) - 26 * g.s };
+      el.animate([{ transform: tf(g.a), opacity: 0 }, { transform: tf({ x: g.a.x + 18, y: g.a.y }), opacity: 1, offset: 0.08 }, { transform: tf(g.b), opacity: 1 }], { duration: walkMs, easing: 'linear', fill: 'forwards' }).finished
+        .then(function () {
+          el.classList.remove('walking'); el.classList.add('sliding');
+          return el.animate([{ transform: tf(g.b) }, { transform: tf({ x: g.b.x + 10 * g.s, y: g.b.y - 14 * g.s }), offset: 0.28 }, { transform: tf(g.c) }], { duration: 700, easing: 'cubic-bezier(.3,0,.6,1)', fill: 'forwards' }).finished;
+        })
+        .then(function () {
+          return el.animate([{ transform: tf(g.c) }, { transform: tf(g.d) }], { duration: Math.max(700, (g.d.x - g.c.x) * 2.4), easing: 'cubic-bezier(.15,.6,.25,1)', fill: 'forwards' }).finished;
+        })
+        .then(function () {
+          el.getAnimations().forEach(function (a) { a.cancel(); });
+          settle();
+          setTimeout(function () { el.classList.add('talk'); }, 350);
+          setTimeout(function () { el.classList.remove('talk'); }, 4200);
+        });
+    }
+
+    el.addEventListener('click', function () { if (el.classList.contains('done')) { el.classList.remove('talk'); run(); } });
+    window.addEventListener('resize', function () { if (el.classList.contains('done')) settle(); });
+    if (reduced) { setTimeout(function () { el.style.opacity = 1; settle(); }, 300); return; }
+    var go = function () { setTimeout(run, 1400); };
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(go); else go();
   }
 
   function relTime(iso) {
