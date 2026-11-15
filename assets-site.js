@@ -146,8 +146,6 @@
       f.style.height = ((box[3] - box[1]) / IH * 100) + '%';
       st.appendChild(f);
     }
-    ['lookr', 'ul', 'up', 'ur'].forEach(function (k) { addFrame(k, FACE.E); });
-    addFrame('smile', FACE.M);
     function fit() {
       var cw = photo.clientWidth, ch = photo.clientHeight;
       var s = Math.max(cw / IW, ch / IH), w = IW * s, h = IH * s;
@@ -176,7 +174,7 @@
     el.className = 'nerd';
     el.setAttribute('aria-hidden', 'true');
     el.innerHTML =
-      '<div class="nerd-bubble mono">that’s her!</div>' +
+      '<div class="nerd-bubble mono"></div>' +
       '<div class="nerd-flip"><svg viewBox="0 0 40 62" width="40" height="62">' +
         '<g class="n-leg n-leg-b"><rect x="17" y="40" width="4.4" height="15" rx="2" fill="#1B2350"/><rect x="15.6" y="53.5" width="7.4" height="4.6" rx="2.2" fill="#E9EDF7"/></g>' +
         '<g class="n-arm n-arm-b"><rect x="18" y="28" width="4" height="12" rx="2" fill="#1666D6"/><circle cx="20" cy="40.5" r="2.1" fill="#C98C62"/></g>' +
@@ -253,7 +251,7 @@
       var g = geom();
       el.className = 'nerd done';
       el.style.opacity = 1;
-      perched = true; glue();
+      place(g.d);
       el.classList.remove('aim-left');
     }
 
@@ -276,46 +274,14 @@
           el.getAnimations().forEach(function (a) { a.cancel(); });
           el.className = 'nerd pointing';
           place(g.d); aim(g.d, g.face);
-          later(function () { say('that\u2019s her!'); }, 300);
-          return wait(2300);
+          return wait(2600);
         })
-        .then(function () {
-          el.classList.remove('talk');
-          var from = geom().d, to = shoulder();
-          el.className = 'nerd crouch';
-          return wait(260).then(function () {
-            el.className = 'nerd flying';
-            var peak = { x: (from.x + to.x) / 2, y: Math.min(from.y, to.y) - Math.max(120, Math.abs(from.x - to.x) * 0.55) };
-            var frames = [], N = 12;
-            for (var i = 0; i <= N; i++) {
-              var t = i / N, u = 1 - t;
-              var p = { x: u * u * from.x + 2 * u * t * peak.x + t * t * to.x, y: u * u * from.y + 2 * u * t * peak.y + t * t * to.y };
-              frames.push({ transform: tf(p, (to.x < from.x ? -360 : 360) * Math.min(1, t * 1.15)) });
-            }
-            return el.animate(frames, { duration: 1100, easing: 'cubic-bezier(.35,.1,.5,1)', fill: 'forwards' }).finished;
-          });
-        })
-        .then(function () {
-          el.getAnimations().forEach(function (a) { a.cancel(); });
-          perched = true; glue();
-          el.className = 'nerd land';
-          return wait(380);
-        })
-        .then(function () {
-          el.className = 'nerd perched pointing';
-          aim(shoulder(), geom().face);
-          say('hi Ananya!', 1300);
-          return wait(700);
-        })
-        .then(function () { faceShow('lookr'); return wait(1300); })
-        .then(function () { faceShow('smile'); el.classList.add('happy'); say('hehe', 2400); return wait(3000); })
-        .then(function () { faceShow(''); el.classList.remove('happy'); return wait(700); })
         .then(endState);
     }
 
     el.addEventListener('click', function () { run(); });
-    window.addEventListener('resize', function () { if (el.classList.contains('done')) place(shoulder()); });
-    if (reduced) { later(function () { el.style.opacity = 1; el.className = 'nerd done'; perched = true; glue(); }, 300); return; }
+    window.addEventListener('resize', function () { if (el.classList.contains('done')) place(geom().d); });
+    if (reduced) { later(function () { el.style.opacity = 1; el.className = 'nerd done'; place(geom().d); }, 300); return; }
     var go = function () { later(run, 1400); };
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(go); else go();
   }
