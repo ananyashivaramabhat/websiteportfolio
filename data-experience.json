@@ -19,8 +19,8 @@
       "when": "Nov 2025 – May 2026",
       "where": "Philadelphia, PA",
       "points": [
-        "Led system integration and bring-up of NVIDIA Jetson and Raspberry Pi platforms for an autonomous racecar, validating cameras, LiDAR, motor controllers and power on a 4-layer PCB.",
-        "Debugged chip-level I2C, SPI and UART failures with scope, logic analyzer and DMM; built a ROS2 gap-following node with AprilTag TF lookups and Ackermann steering."
+        "Led system integration and bring-up of NVIDIA Jetson and Raspberry Pi platforms for an autonomous racecar, validating cameras, LiDAR, motor controllers and power.",
+        "Debugged I2C, SPI and UART communication failures with scope, logic analyzer and DMM; built a ROS2 gap-following node with AprilTag TF lookups and Ackermann steering."
       ]
     },
     {
