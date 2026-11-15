@@ -455,10 +455,10 @@ main{overflow-x:clip}
 .cs-hero.cine .lede{animation-delay:.35s}.cs-hero.cine .cs-meta{animation-delay:.5s}.cs-hero.cine .explore{animation-delay:.65s}.cs-hero.cine .crumb{animation-delay:.1s}
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 #m-hero .shot .zoom{overflow:hidden}
-#m-hero .shot .zoom img{aspect-ratio:21/9;object-fit:cover;object-position:50% 55%;animation:kb 26s ease-in-out infinite alternate}
+#m-hero .shot .zoom img{aspect-ratio:auto;width:100%;height:auto;object-fit:contain}
 #m-hero .shot{position:relative}
-#m-hero .shot .zoom::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 80% 90% at 50% 50%,transparent 50%,rgba(0,0,0,.55) 100%)}
-@media (max-width:820px){.arx-board{width:150vw;right:-45vw;top:2%}.arx-bg::after{background:linear-gradient(0deg,var(--bg) 0%,rgba(6,8,20,.75) 45%,rgba(6,8,20,.45) 100%)}#m-hero .shot .zoom img{aspect-ratio:4/3}}
+
+@media (max-width:820px){.arx-board{width:150vw;right:-45vw;top:2%}.arx-bg::after{background:linear-gradient(0deg,var(--bg) 0%,rgba(6,8,20,.75) 45%,rgba(6,8,20,.45) 100%)}}
 @media (prefers-reduced-motion:reduce){.hero::before,.cs-hero.cine::before,.arx-scan,.hero-photo::before{animation:none}.hero::after,.cs-hero.cine::after{animation:none}.hero-photo.loaded img,.arx-board,#m-hero .shot .zoom img{animation:none;opacity:.62}.arx-board{opacity:.62}.hero h1 .line span,.cs-hero.cine h1{animation:none;-webkit-text-fill-color:currentColor;background:none}.cs-hero.cine .crumb,.cs-hero.cine .lede,.cs-hero.cine .cs-meta,.cs-hero.cine .explore{opacity:1;animation:none}}
 
 /* nerd girl */
