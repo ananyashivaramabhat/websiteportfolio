@@ -7,15 +7,15 @@
       "when": "May 2026 – Present",
       "year": "2026",
       "where": "Santa Clara, CA",
-      "summary": "Bare-metal C firmware on STM32 for silicon photonic engines, from the bootloader and update path to drivers, bring-up, control loops and production calibration.",
+      "summary": "Embedded firmware in C on STM32 for optical engine modules: secure boot and field update, drivers and hardware bring-up, control loops, telemetry and calibration.",
       "stack": [
         "STM32",
         "Bare-metal C",
         "Linker scripts",
         "arm-none-eabi-gcc",
-        "CMIS 5.3",
         "I2C",
         "SPI",
+        "UART",
         "Python"
       ],
       "highlights": [
@@ -23,46 +23,82 @@
           "title": "Secure bootloader",
           "visual": "memmap",
           "points": [
-            "Architected and built the bootloader from scratch.",
-            "Flash memory map and custom linker scripts partitioning the bootloader and dual application banks.",
-            "Encrypted firmware images authenticated and decrypted at boot.",
-            "Run/commit state tracking with automatic rollback to the last known-good image, and vector table relocation on jump to application."
+            "Built the secure bootloader for the optical engine boards end to end.",
+            "Encrypted firmware images, authenticated and decrypted at boot.",
+            "Dual-bank flash layout with run/commit and automatic rollback handling, partitioned with custom linker scripts."
           ]
         },
         {
-          "title": "CMIS 5.3 CDB firmware update",
+          "title": "Field firmware update",
           "visual": "bus",
           "points": [
-            "LPL and EPL CDB modes implemented as I2C state machines with error handling.",
-            "Python host tooling validated against switch host software."
+            "Implemented firmware image management over the module's I2C management interface, following an industry-standard update flow.",
+            "Wrote Python host tooling for image download, commit and version query, validated against host switch software."
           ]
         },
         {
-          "title": "Drivers and silicon bring-up",
+          "title": "Hardware bring-up",
+          "visual": "drivers",
           "points": [
-            "Bare-metal I2C, SPI, UART, ADC, DAC, GPIO and timer drivers under a cooperative scheduler.",
-            "Owned ASIC silicon and STM32 board bring-up on a CMIS 5.3 ELSFP module with dedicated bring-up firmware, debugging hardware and firmware interactions.",
-            "UART fault logging, and sweeps streamed through a firmware ring buffer over I2C."
-          ],
-          "visual": "drivers"
+            "Owned STM32 board bring-up on a new optical module.",
+            "Bare-metal drivers for I2C, SPI, UART, ADC, DAC, GPIO and timers.",
+            "UART logging for control-loop and fault visibility."
+          ]
         },
         {
-          "title": "Closed-loop device control",
+          "title": "Control and telemetry",
           "visual": "loop",
           "points": [
-            "Control firmware for silicon nitride microring resonators, MZI and bandpass filters, SOAs, TECs, comb lasers and photodiodes.",
-            "Microring resonance tuning and cascaded MZI mesh tuning: hill-climbing and gradient bias search, butterfly sweeps, hysteresis-based extremum detection.",
-            "Comb-laser power equalization, SOA and laser bias control, and a thermistor-feedback TEC loop with case-temperature monitoring and CMIS alarm and warning thresholds."
+            "Closed-loop control firmware for the module's optical and thermal components.",
+            "Thermistor-feedback thermal loop holding the module within spec.",
+            "Case-temperature telemetry with alarm and warning thresholds, exposed to the host over the management interface."
           ]
         },
         {
-          "title": "Production calibration",
+          "title": "Calibration and data",
+          "visual": "calib",
           "points": [
-            "Calibration carried from bring-up through to production.",
-            "ADC/DAC code-to-SI conversions derived from PCB schematics and layout, and photodiode tap-ratio calibration.",
-            "Per-unit coefficients stored in flash and self-applied at boot."
-          ],
-          "visual": "calib"
+            "Derived ADC/DAC code-to-SI conversions by reading the PCB schematics and layout.",
+            "Scaled bring-up to production with per-unit calibration stored in flash and self-applied at boot.",
+            "Streamed measurement sweeps through a firmware ring buffer read out over I2C."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "xlab",
+      "org": "University of Pennsylvania xLab",
+      "role": "Embedded Systems Research Assistant",
+      "when": "Nov 2025 – May 2026",
+      "year": "2025",
+      "where": "Philadelphia, PA",
+      "summary": "System integration and bring-up for an autonomous racecar platform.",
+      "stack": [
+        "NVIDIA Jetson",
+        "Raspberry Pi",
+        "ROS2",
+        "I2C",
+        "SPI",
+        "UART",
+        "Oscilloscope",
+        "Logic analyzer"
+      ],
+      "highlights": [
+        {
+          "title": "Platform bring-up",
+          "visual": "platform",
+          "points": [
+            "Led system integration and bring-up of NVIDIA Jetson and Raspberry Pi platforms for an autonomous racecar.",
+            "Validated cameras, LiDAR, motor controllers and power subsystems on a 4-layer mixed-signal PCB.",
+            "Debugged chip-level I2C, SPI and UART failures on new board builds with an oscilloscope, logic analyzer and DMM."
+          ]
+        },
+        {
+          "title": "Autonomous navigation",
+          "visual": "ros",
+          "points": [
+            "Developed a ROS2 gap-following node with AprilTag-based TF lookups and Ackermann steering for closed-loop navigation."
+          ]
         }
       ]
     },
