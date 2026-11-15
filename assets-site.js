@@ -307,10 +307,7 @@
           say('hi Ananya!', 1300);
           return wait(700);
         })
-        .then(function () { faceShow('ul'); return wait(170); })
-        .then(function () { faceShow('up'); return wait(280); })
-        .then(function () { faceShow('ur'); return wait(170); })
-        .then(function () { faceShow('lookr'); return wait(650); })
+        .then(function () { faceShow('lookr'); return wait(700); })
         .then(function () { faceShow('smile'); el.classList.add('happy'); say('hehe', 1300); return wait(1700); })
         .then(function () { faceShow(''); el.classList.remove('happy'); return wait(300); })
         .then(endState);
