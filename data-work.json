@@ -77,8 +77,8 @@
           "visual": "platform",
           "points": [
             "Led system integration and bring-up of NVIDIA Jetson and Raspberry Pi platforms for an autonomous racecar.",
-            "Validated cameras, LiDAR, motor controllers and power subsystems on a 4-layer mixed-signal PCB.",
-            "Debugged chip-level I2C, SPI and UART failures on new board builds with an oscilloscope, logic analyzer and DMM."
+            "Validated cameras, LiDAR, motor controllers and power subsystems.",
+            "Debugged I2C, SPI and UART communication failures with an oscilloscope, logic analyzer and DMM."
           ]
         },
         {
