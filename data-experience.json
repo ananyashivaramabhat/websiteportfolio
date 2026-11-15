@@ -6,10 +6,11 @@
       "when": "May 2026 – Present",
       "where": "Santa Clara, CA",
       "points": [
-        "Built the secure bootloader for optical engine boards: encrypted, authenticated images with dual-bank commit and rollback.",
-        "Implemented field firmware update over the I2C management interface, with Python host tooling validated against switch software.",
-        "Owned STM32 hardware bring-up, bare-metal drivers, thermal and optical control loops, and telemetry with alarm thresholds.",
-        "Scaled bring-up to production with per-unit flash calibration applied at boot."
+        "Developing embedded firmware for silicon photonic integrated circuits; now contributing to firmware for the company's next-generation product.",
+        "Firmware bring-up and closed-loop control for MZI meshes, ring resonators, comb lasers, SOAs, photodiodes and TECs on a CMIS-compliant ELSFP optical module.",
+        "MZI tuning and calibration, optical power equalization, photodiode tap ratio calibration and thermistor-based temperature control.",
+        "Secure bootloader with encrypted images and CMIS-standard in-field firmware download, from image transfer to on-device decryption and programming.",
+        "I2C data readout to Python tooling, UART logging, and ADC/DAC conversions derived from PCB schematics and layout."
       ]
     },
     {
@@ -125,6 +126,16 @@
       "PID and feedback control",
       "Silicon and board bring-up",
       "Production calibration"
+    ],
+    "Photonics": [
+      "MZI meshes",
+      "Ring resonators",
+      "Comb lasers",
+      "SOAs",
+      "Photodiodes",
+      "TECs",
+      "ELSFP modules",
+      "OSA"
     ],
     "Tools": [
       "Git",
