@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About · Ananya Shivarama Bhat</title>
+<meta name="description" content="Experience, education, publications and skills.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body data-page="about">
+<a class="skip" href="#main">Skip to content</a>
+<header id="site-header"></header>
+
+<main id="main" class="wrap">
+  <section class="cs-hero">
+    <p class="mono mute">About</p>
+    <h1 style="font-size: clamp(48px, 7vw, 96px); letter-spacing: -.05em; line-height: .95; margin: 18px 0 24px; max-width: 11em">I like the part where the board first powers on.</h1>
+    <div class="prose" style="font-size: 18px">
+      <p>I'm an embedded firmware engineer finishing an M.S.E. in Electrical and Systems Engineering at the University of Pennsylvania. Most of my work lives between a schematic and a register map: drivers, bootloaders, firmware update paths, control loops and the bring-up that makes new hardware trustworthy.</p>
+      <p>This year I'm writing bare-metal STM32 firmware for silicon photonic engines at Xscape Photonics. Before that I worked on embedded Linux at Siemens, test automation at Nokia, and resonator characterization at IISc. I grew up in Yellapur, India, and studied electronics at BMS College of Engineering in Bengaluru.</p>
+    </div>
+    <div class="links" style="margin-top: 32px">
+      <a class="btn solid" href="resume.pdf">Download résumé <span class="arrow">→</span></a>
+      <a class="btn" href="#contact">Get in touch</a>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="exp-h">
+    <div class="sec-head"><span class="num">01</span><h2 id="exp-h">Experience</h2></div>
+    <div class="timeline" id="jobs"></div>
+  </section>
+
+  <section class="section">
+    <div class="two">
+      <div>
+        <div class="sec-head" style="grid-template-columns: 1fr"><h2>Education</h2></div>
+        <ul class="list-plain" id="edu"></ul>
+      </div>
+      <div>
+        <div class="sec-head" style="grid-template-columns: 1fr"><h2>Publications</h2></div>
+        <ul class="list-plain" id="pubs"></ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="sk-h">
+    <div class="sec-head"><span class="num">02</span><h2 id="sk-h">Toolbox</h2></div>
+    <div class="skills" id="skills"></div>
+  </section>
+
+  <section class="section" id="contact" aria-labelledby="ct-h">
+    <div class="sec-head"><span class="num">03</span><h2 id="ct-h">Contact</h2><p class="sub">I'm looking for full-time embedded firmware roles starting 2027.</p></div>
+    <form class="form" id="contact-form">
+      <label>Name<input name="name" autocomplete="name" required></label>
+      <label>Email<input name="email" type="email" autocomplete="email" required></label>
+      <label>Message<textarea name="message" rows="5" required></textarea></label>
+      <div><button class="btn solid" type="submit">Send <span class="arrow">→</span></button></div>
+      <p class="form-msg" role="status"></p>
+    </form>
+    <p id="contact-fallback" hidden class="prose" style="font-size: 18px">The fastest way to reach me is email: <a href="mailto:ananya9@engineering.upenn.edu">ananya9@engineering.upenn.edu</a>. I'm also on <a href="https://linkedin.com/in/ananya473">LinkedIn</a>.</p>
+  </section>
+</main>
+
+<footer id="site-footer"></footer>
+<script src="assets/site.js" defer></script>
+</body>
+</html>

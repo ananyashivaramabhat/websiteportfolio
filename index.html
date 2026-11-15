@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ananya Shivarama Bhat · Firmware Engineer</title>
+<meta name="description" content="Firmware engineer: bare-metal C, RTOS, secure bootloaders, firmware updates and silicon bring-up.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body data-page="home">
+<a class="skip" href="#main">Skip to content</a>
+<header id="site-header"></header>
+
+<main id="main">
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-photo"><img src="portrait.jpg" alt="Ananya Shivarama Bhat" style="object-position: 50% 8%"></div>
+    <div class="hero-inner">
+      <p class="hero-status mono"><i aria-hidden="true"></i>Firmware Engineering Intern · Xscape Photonics</p>
+      <h1 id="hero-title"><span class="line"><span>Ananya</span></span><span class="line"><span>Shivarama Bhat</span></span></h1>
+      <p class="hero-lede">Firmware engineer writing bare-metal C and RTOS code: drivers, secure bootloaders, firmware updates, control loops and silicon bring-up. M.S.E. at Penn, graduating 2027.</p>
+      <div class="hero-actions">
+        <a class="btn solid" href="work.html">See the work <span class="arrow">→</span></a>
+        <a class="btn" href="ambientrx.html">AmbientRx case study</a>
+      </div>
+      <svg class="scope" viewBox="0 0 520 56" aria-hidden="true">
+        <path class="grid" d="M0 10 H520 M0 46 H520"></path>
+        <text x="0" y="8">SCL</text>
+        <path class="trace" pathLength="1" d="M28 10 H60 V46 H76 V10 H92 V46 H108 V10 H124 V46 H140 V10 H156 V46 H172 V10 H188 V46 H204 V10 H220 V46 H236 V10 H252 V46 H268 V10 H284 V46 H300 V10 H316 V46 H332 V10 H348 V46 H364 V10 H380 V46 H396 V10 H520"></path>
+        <text x="430" y="40">0x44 · ACK</text>
+      </svg>
+    </div>
+  </section>
+
+
+  <div class="wrap">
+    <section class="section" aria-labelledby="feat-h">
+      <div class="sec-head"><span class="num">01</span><h2 id="feat-h">Featured build</h2></div>
+      <a class="feature reveal" href="ambientrx.html">
+        <div class="feature-vis" aria-hidden="true">
+          <svg viewBox="0 0 400 340" style="position: absolute; inset: 0; width: 100%; height: 100%" preserveAspectRatio="xMidYMid meet">
+            <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="40" y="76" width="320" height="181" rx="8" stroke="#2A3258" stroke-width="1.5"></rect>
+              <rect x="160" y="130" width="80" height="80" rx="3" stroke="#F2F4FA" stroke-width="1.5"></rect>
+              <text x="200" y="166" text-anchor="middle" font-family="Geist Mono, monospace" font-size="11" fill="#F2F4FA" stroke="none">SiWx917</text>
+              <text x="200" y="182" text-anchor="middle" font-family="Geist Mono, monospace" font-size="9" fill="#8E97B3" stroke="none">Cortex-M4</text>
+              <rect x="110" y="86" width="34" height="22" stroke="#8E97B3"></rect><text x="127" y="122" text-anchor="middle" font-family="Geist Mono, monospace" font-size="8" fill="#8E97B3" stroke="none">SHT41</text>
+              <rect x="256" y="86" width="34" height="22" stroke="#8E97B3"></rect><text x="273" y="122" text-anchor="middle" font-family="Geist Mono, monospace" font-size="8" fill="#8E97B3" stroke="none">VEML7700</text>
+              <rect x="110" y="232" width="40" height="28" stroke="#8E97B3"></rect><text x="130" y="275" text-anchor="middle" font-family="Geist Mono, monospace" font-size="8" fill="#8E97B3" stroke="none">BQ24075</text>
+              <rect x="252" y="232" width="40" height="28" stroke="#8E97B3"></rect><text x="272" y="275" text-anchor="middle" font-family="Geist Mono, monospace" font-size="8" fill="#8E97B3" stroke="none">TPS63802</text>
+              <path d="M144 97 H152 V146 H160 M256 97 H248 V146 H240 M150 246 H170 V210 M252 246 H230 V210" stroke="#2A3258" stroke-width="1.5"></path>
+              <path class="feat-sig" pathLength="1" d="M144 97 H152 V146 H160" stroke="#1E7BFF" stroke-width="2"></path>
+              <path class="feat-sig b" pathLength="1" d="M256 97 H248 V146 H240" stroke="#1E7BFF" stroke-width="2"></path>
+              <path class="feat-sig c" pathLength="1" d="M252 246 H230 V210" stroke="#1E7BFF" stroke-width="2"></path>
+              <text x="40" y="64" font-family="Geist Mono, monospace" font-size="10" fill="#8E97B3" stroke="none">80.5 × 45.5 mm · 4 layers</text>
+            </g>
+          </svg>
+        </div>
+        <div class="feature-body">
+          <div style="display: flex; flex-direction: column; gap: 14px">
+            <p class="mono mute">Hardware + firmware · 2026 · Lutron Best Project Award</p>
+            <h3>AmbientRx</h3>
+            <p class="mute" style="font-size: 17px; max-width: 30em">A medication storage box that senses and corrects its own climate. I designed the 4-layer PCB, brought it up, and wrote the FreeRTOS firmware, cloud link and OTA path.</p>
+          </div>
+          <div class="tags"><span class="tag">SiWx917</span><span class="tag">FreeRTOS</span><span class="tag">Altium</span><span class="tag">MQTT</span><span class="tag">OTA</span></div>
+          <span class="mono" style="display: inline-flex; gap: 8px; align-items: center">Read the case study <span class="arrow">→</span></span>
+        </div>
+      </a>
+      <style>
+        .feat-sig{stroke-dasharray:.12 .88;animation:featsig 2.6s linear infinite}
+        .feat-sig.b{animation-delay:-.9s}.feat-sig.c{animation-delay:-1.7s}
+        @keyframes featsig{from{stroke-dashoffset:0}to{stroke-dashoffset:-1}}
+      </style>
+    </section>
+
+
+    <section class="section" aria-labelledby="gh-h">
+      <div class="sec-head"><span class="num">02</span><h2 id="gh-h">Recently on GitHub</h2><p class="sub">Pulled live from the GitHub API each time the page loads.</p></div>
+      <div class="gh-grid" id="gh"></div>
+    </section>
+  </div>
+</main>
+
+<footer id="site-footer"></footer>
+<noscript><p class="wrap mute" style="padding: 24px 28px">Some sections load with JavaScript. Email ananya9@engineering.upenn.edu.</p></noscript>
+<script src="assets/site.js" defer></script>
+</body>
+</html>
