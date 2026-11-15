@@ -335,8 +335,8 @@
   "media": {
     "hero": [
       {
-        "src": "img-ambientrx-final-assembly.jpg",
-        "caption": "Final build with the electronics inside the enclosure",
+        "src": "img-ambientrx-altium-3d-top.jpg",
+        "caption": "3D render of the 4-layer main board",
         "wide": true
       }
     ],
