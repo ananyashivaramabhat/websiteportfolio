@@ -172,10 +172,11 @@
           j.points.map(function (p) { return '<li>' + esc(p) + '</li>'; }).join('') + '</ul></div></article>';
       }).join('');
       $('#edu').innerHTML = d.education.map(function (e) {
-        return '<li><strong style="font-weight: 500">' + esc(e.school) + '</strong><span class="mute">' + esc(e.degree) + '</span><span class="mono mute">' + esc(e.when) + '</span></li>';
+        return '<li><strong style="font-weight: 500">' + esc(e.school) + '</strong><span class="mute">' + esc(e.degree) + '</span>' + (e.courses ? '<span class="mute" style="font-size: 0.85em">Coursework: ' + esc(e.courses.join(', ')) + '</span>' : '') + '<span class="mono mute">' + esc(e.when) + '</span></li>';
       }).join('');
       $('#pubs').innerHTML = d.publications.map(function (p) {
-        return '<li><strong style="font-weight: 500">' + esc(p.title) + '</strong><span class="mono mute">' + esc(p.venue) + ' · ' + esc(p.year) + '</span></li>';
+        var t = '<strong style="font-weight: 500">' + esc(p.title) + (p.url ? ' ↗' : '') + '</strong>';
+        return '<li>' + (p.url ? '<a href="' + esc(p.url) + '" target="_blank" rel="noopener">' + t + '</a>' : t) + '<span class="mono mute">' + esc(p.venue) + ' · ' + esc(p.year) + '</span></li>';
       }).join('');
       $('#skills').innerHTML = Object.keys(d.skills).map(function (k) {
         return '<div class="reveal"><h3>' + esc(k) + '</h3><div class="tags">' +
