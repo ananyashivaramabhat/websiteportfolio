@@ -447,10 +447,10 @@
             '<ol class="built">' + h.points.map(function (x) { return '<li class="reveal"><span class="mono mute">·</span><span>' + esc(x) + '</span></li>'; }).join('') + '</ol></section>';
         }).join('');
         $('#project').innerHTML =
-          '<section class="cs-hero">' +
+          '<section class="cs-hero' + (p.logo ? ' has-logo' : '') + '">' +
+            (p.logo ? '<div class="cs-bg" aria-hidden="true"><div class="cs-x"><img src="' + esc(p.logo) + '" alt=""><i class="cs-sweep"></i></div></div>' : '') +
             '<a class="crumb mono" href="work.html"><span aria-hidden="true">←</span> Work</a>' +
             '<p class="mono mute" style="margin-top: 18px">' + esc(p.when) + ' · ' + esc(p.where) + '</p>' +
-            (p.logo ? '<div class="org-logo" style="width: clamp(220px, 30vw, 360px); aspect-ratio: 630 / 131; overflow: hidden; margin: 28px 0 0"><img src="' + esc(p.logo) + '" alt="' + esc(p.org) + ' logo" style="display: block; width: 119.05%; max-width: none; margin: -23.02% 0 0 -9.52%; mix-blend-mode: screen"></div>' : '') +
             '<h1 style="font-size: clamp(44px, 7.5vw, 104px)">' + esc(p.org) + '</h1>' +
             '<p class="lede"><span style="color: var(--fg)">' + esc(p.role) + '.</span> ' + esc(p.summary) + '</p>' +
             '<div class="tags" style="margin-top: 28px">' + p.stack.map(function (s) { return '<span class="tag">' + esc(s) + '</span>'; }).join('') + '</div>' +
