@@ -109,6 +109,14 @@
       var img = $('img', photo);
       var done = function () { photo.classList.add('loaded'); };
       if (img.complete) done(); else img.addEventListener('load', done);
+      var hero = $('.hero');
+      if (hero && window.matchMedia('(pointer: fine)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        hero.addEventListener('pointermove', function (e) {
+          var r = hero.getBoundingClientRect();
+          photo.style.transform = 'translate(' + (((e.clientX - r.left) / r.width - 0.5) * -14).toFixed(1) + 'px,' + (((e.clientY - r.top) / r.height - 0.5) * -10).toFixed(1) + 'px) scale(1.02)';
+        });
+        hero.addEventListener('pointerleave', function () { photo.style.transform = ''; });
+      }
     }
 
     loadGitHub();
@@ -204,7 +212,19 @@
     });
   }
 
+  function cineArxHero() {
+    var h = $('.cs-hero');
+    if (!h || h.classList.contains('cine')) return;
+    h.classList.add('cine');
+    var bg = document.createElement('div');
+    bg.className = 'arx-bg';
+    bg.setAttribute('aria-hidden', 'true');
+    bg.innerHTML = '<div class="arx-board"><img src="img-ambientrx-layers-l1-top.png" alt=""><i class="arx-scan"></i></div>';
+    h.insertBefore(bg, h.firstChild);
+  }
+
   function initAmbientRx() {
+    cineArxHero();
     getJSON('data-ambientrx.json').then(function (d) {
       drawLoadChart(d.loadTest);
       drawBugs(d.bugs);
