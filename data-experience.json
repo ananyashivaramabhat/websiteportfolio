@@ -6,11 +6,20 @@
       "when": "May 2026 – Present",
       "where": "Santa Clara, CA",
       "points": [
-        "Bare-metal C control firmware on STM32 for silicon photonic engines: microrings, MZI and bandpass filters, SOAs, TECs, comb lasers and photodiodes.",
-        "Architected the secure bootloader from scratch: dual application banks, encrypted images, run/commit tracking and automatic rollback.",
-        "CMIS 5.3 CDB firmware update in LPL and EPL modes as I2C state machines, plus Python host tooling.",
-        "Drivers for I2C, SPI, UART, ADC, DAC, GPIO and timers under a cooperative scheduler; ASIC silicon and board bring-up.",
-        "Closed-loop control and production calibration with per-unit coefficients stored in flash."
+        "Built the secure bootloader for optical engine boards: encrypted, authenticated images with dual-bank commit and rollback.",
+        "Implemented field firmware update over the I2C management interface, with Python host tooling validated against switch software.",
+        "Owned STM32 hardware bring-up, bare-metal drivers, thermal and optical control loops, and telemetry with alarm thresholds.",
+        "Scaled bring-up to production with per-unit flash calibration applied at boot."
+      ]
+    },
+    {
+      "org": "University of Pennsylvania xLab",
+      "role": "Embedded Systems Research Assistant",
+      "when": "Nov 2025 – May 2026",
+      "where": "Philadelphia, PA",
+      "points": [
+        "Led system integration and bring-up of NVIDIA Jetson and Raspberry Pi platforms for an autonomous racecar, validating cameras, LiDAR, motor controllers and power on a 4-layer PCB.",
+        "Debugged chip-level I2C, SPI and UART failures with scope, logic analyzer and DMM; built a ROS2 gap-following node with AprilTag TF lookups and Ackermann steering."
       ]
     },
     {
@@ -96,10 +105,10 @@
     ],
     "Boot and Update": [
       "Dual-bank bootloaders",
-      "Encrypted images",
+      "Encrypted and authenticated images",
       "Rollback",
-      "CMIS 5.3 CDB (LPL/EPL)",
-      "HTTP OTA"
+      "Field firmware update",
+      "OTA"
     ],
     "Buses": [
       "I2C",
@@ -127,7 +136,9 @@
       "Verilator",
       "cocotb",
       "Vivado",
-      "Linux"
+      "Linux",
+      "Simplicity Studio",
+      "ROS2"
     ],
     "Debug and Lab": [
       "Oscilloscope",
