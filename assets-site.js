@@ -214,7 +214,7 @@
       observeReveals();
     });
     runPipeline();
-    tocSpy();
+    setupTabs();
   }
 
   function drawLoadChart(pts) {
@@ -319,23 +319,148 @@
   }
 
   function setupLightbox() {
-    var dlg = document.getElementById('lb');
-    if (!dlg) {
-      dlg = document.createElement('dialog');
-      dlg.id = 'lb';
-      dlg.className = 'lightbox';
-      dlg.innerHTML = '<button type="button" class="lb-close" aria-label="Close">×</button><img alt=""><p class="mono"></p>';
-      document.body.appendChild(dlg);
-      dlg.addEventListener('click', function (e) { if (e.target === dlg || e.target.classList.contains('lb-close')) dlg.close(); });
+    if (document.getElementById('lb')) return;
+    var dlg = document.createElement('dialog');
+    dlg.id = 'lb';
+    dlg.className = 'lightbox';
+    dlg.innerHTML =
+      '<div class="lb-bar"><p class="lb-cap mono"></p><span class="lb-count mono mute"></span>' +
+      '<div class="lb-actions"><button type="button" class="lb-btn" data-act="prev" aria-label="Previous">‹</button><button type="button" class="lb-btn" data-act="next" aria-label="Next">›</button>' +
+      '<button type="button" class="lb-btn lb-wide" data-act="zoom">Zoom</button><a class="lb-btn lb-wide" target="_blank" rel="noopener">Full size ↗</a>' +
+      '<button type="button" class="lb-btn" data-act="close" aria-label="Close">×</button></div></div>' +
+      '<div class="lb-stage"><img alt=""></div>';
+    document.body.appendChild(dlg);
+    var stage = $('.lb-stage', dlg), img = $('img', dlg), group = [], idx = 0;
+    function show(i) {
+      idx = (i + group.length) % group.length;
+      var b = group[idx];
+      dlg.classList.remove('zoomed');
+      img.src = b.dataset.src; img.alt = b.dataset.cap;
+      $('.lb-cap', dlg).textContent = b.dataset.cap;
+      $('.lb-count', dlg).textContent = group.length > 1 ? (idx + 1) + ' / ' + group.length : '';
+      $('a.lb-btn', dlg).href = b.dataset.src;
+      $all('[data-act=prev],[data-act=next]', dlg).forEach(function (x) { x.hidden = group.length < 2; });
+      stage.scrollTo(0, 0);
     }
-    $all('.zoom').forEach(function (b) {
-      b.addEventListener('click', function () {
-        $('img', dlg).src = b.dataset.src;
-        $('img', dlg).alt = b.dataset.cap;
-        $('p', dlg).textContent = b.dataset.cap;
-        if (dlg.showModal) dlg.showModal(); else window.open(b.dataset.src);
-      });
+    function zoom(e) {
+      var on = !dlg.classList.contains('zoomed');
+      dlg.classList.toggle('zoomed', on);
+      $('[data-act=zoom]', dlg).textContent = on ? 'Fit' : 'Zoom';
+      if (on && e && e.offsetX != null && e.target === img) {
+        var fx = e.offsetX / img.clientWidth, fy = e.offsetY / img.clientHeight;
+        requestAnimationFrame(function () { stage.scrollLeft = fx * img.scrollWidth - stage.clientWidth / 2; stage.scrollTop = fy * img.scrollHeight - stage.clientHeight / 2; });
+      }
+    }
+    document.addEventListener('click', function (e) {
+      var b = e.target.closest && e.target.closest('.zoom');
+      if (!b) return;
+      var box = b.closest('.media') || b.parentNode;
+      group = $all('.zoom', box);
+      if (dlg.showModal) { show(group.indexOf(b)); $('[data-act=zoom]', dlg).textContent = 'Zoom'; dlg.showModal(); } else window.open(b.dataset.src);
     });
+    dlg.addEventListener('click', function (e) {
+      var act = e.target.dataset && e.target.dataset.act;
+      if (e.target === dlg || act === 'close') dlg.close();
+      else if (act === 'prev') show(idx - 1);
+      else if (act === 'next') show(idx + 1);
+      else if (act === 'zoom') zoom();
+      else if (e.target === img && !dragged) zoom(e);
+    });
+    dlg.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight') show(idx + 1);
+      else if (e.key === 'ArrowLeft') show(idx - 1);
+      else if (e.key === 'z' || e.key === 'Z') zoom();
+    });
+    var drag = null, dragged = false;
+    stage.addEventListener('pointerdown', function (e) {
+      if (!dlg.classList.contains('zoomed') || e.pointerType === 'touch') return;
+      drag = { x: e.clientX, y: e.clientY, l: stage.scrollLeft, t: stage.scrollTop }; dragged = false;
+    });
+    window.addEventListener('pointermove', function (e) {
+      if (!drag) return;
+      var dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+      if (Math.abs(dx) + Math.abs(dy) > 4) dragged = true;
+      stage.scrollLeft = drag.l - dx; stage.scrollTop = drag.t - dy;
+    });
+    window.addEventListener('pointerup', function () { drag = null; setTimeout(function () { dragged = false; }, 0); });
+  }
+
+  /* AmbientRx: tabbed explorer */
+  var ARX_TABS = [
+    { id: 'overview', label: 'Overview', blurb: 'The problem, the system and the block diagram.', meta: 'Start here', secs: ['overview', 'architecture'] },
+    { id: 'hardware', label: 'Hardware', blurb: 'Power path, regulation, MCU, sensors and protection.', meta: '4-layer board', secs: ['hardware', 'schematics', 'layout'], subs: [['hardware', 'Design'], ['schematics', 'Schematics'], ['layout', 'PCB layout']] },
+    { id: 'firmware', label: 'Firmware & cloud', blurb: 'FreeRTOS tasks, on-device vision, MQTT and OTA.', meta: 'C · FreeRTOS · MQTT', secs: ['firmware', 'cloud'], subs: [['firmware', 'Firmware'], ['cloud', 'Cloud']] },
+    { id: 'testing', label: 'Testing', blurb: 'Rail regulation, thermal imaging and all 40 requirements.', meta: '31 of 40 met', secs: ['power-test', 'validation'], subs: [['power-test', 'Power and thermal'], ['validation', 'Validation']] },
+    { id: 'bringup', label: 'Bring-up log', blurb: 'Seven bugs, from dead I2C pins to a 5 V rail that would not start.', meta: '7 bugs', secs: ['bringup'] },
+    { id: 'build', label: 'Enclosure & Rev 2', blurb: 'The CAD enclosure and what the next revision changes.', meta: 'What I would change', secs: ['gallery', 'rev2'] }
+  ];
+  function setupTabs() {
+    var layout = $('.cs-layout');
+    if (!layout) return;
+    var toc = $('.toc', layout); if (toc) toc.remove();
+    layout.classList.add('tabbed');
+    var owner = {};
+    ARX_TABS.forEach(function (t) { t.secs.forEach(function (s) { owner[s] = t.id; }); });
+
+    var explore = document.createElement('div');
+    explore.className = 'explore';
+    explore.innerHTML = '<p class="mono mute explore-h">Explore the project</p><div class="explore-grid">' + ARX_TABS.map(function (t, i) {
+      return '<a class="xcard" href="#' + t.id + '" data-tab="' + t.id + '"><span class="mono mute">' + pad(i + 1) + '</span><strong>' + esc(t.label) + '</strong><span class="xb">' + esc(t.blurb) + '</span><span class="mono xm">' + esc(t.meta) + ' →</span></a>';
+    }).join('') + '</div>';
+    var hero = $('.cs-hero');
+    var heroMedia = $('#m-hero');
+    hero.insertBefore(explore, heroMedia);
+
+    var bar = document.createElement('nav');
+    bar.className = 'cs-tabs';
+    bar.setAttribute('aria-label', 'Project sections');
+    bar.innerHTML = '<div class="cs-tabs-in">' + ARX_TABS.map(function (t) { return '<a href="#' + t.id + '" data-tab="' + t.id + '">' + esc(t.label) + '</a>'; }).join('') + '</div>';
+    layout.parentNode.insertBefore(bar, layout);
+
+    var body = $('div', layout) || layout;
+    var subnav = document.createElement('div');
+    subnav.className = 'cs-subnav';
+    body.insertBefore(subnav, body.firstChild);
+    var pager = document.createElement('div');
+    pager.className = 'cs-pager';
+    var moreWork = $('nav[aria-label="More work"]', body);
+    body.insertBefore(pager, moreWork || null);
+
+    var current = null;
+    function select(id, sub, scroll) {
+      var t = ARX_TABS.filter(function (x) { return x.id === id; })[0] || ARX_TABS[0];
+      current = t.id;
+      $all('section.section[id]', body).forEach(function (s) { if (owner[s.id]) s.hidden = owner[s.id] !== t.id; });
+      $all('a', bar).forEach(function (a) { a.classList.toggle('active', a.dataset.tab === t.id); if (a.dataset.tab === t.id) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+      subnav.innerHTML = t.subs ? t.subs.map(function (x) { return '<a href="#' + x[0] + '" data-sub="' + x[0] + '">' + esc(x[1]) + '</a>'; }).join('') : '';
+      subnav.hidden = !t.subs;
+      var i = ARX_TABS.indexOf(t), prev = ARX_TABS[i - 1], next = ARX_TABS[i + 1];
+      pager.innerHTML = (prev ? '<a href="#' + prev.id + '" data-tab="' + prev.id + '"><span class="mono mute">← Previous</span><span>' + esc(prev.label) + '</span></a>' : '<span></span>') +
+        (next ? '<a href="#' + next.id + '" data-tab="' + next.id + '" style="text-align: right"><span class="mono mute">Next →</span><span>' + esc(next.label) + '</span></a>' : '<span></span>');
+      $all('.reveal', body).forEach(function (e) { if (!e.closest('[hidden]')) e.classList.add('in'); });
+      $all('.chart', body).forEach(function (e) { if (!e.closest('[hidden]')) e.classList.add('in'); });
+      if (scroll) {
+        var target = sub ? document.getElementById(sub) : bar;
+        var hh = ($('.site-header') || {}).offsetHeight || 0;
+        var y = target.getBoundingClientRect().top + window.scrollY - (sub ? hh + bar.offsetHeight + 16 : hh);
+        window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+      }
+    }
+    function fromHash(scroll) {
+      var h = (location.hash || '').slice(1);
+      if (ARX_TABS.some(function (t) { return t.id === h; })) select(h, null, scroll);
+      else if (owner[h]) select(owner[h], h, scroll);
+      else select('overview', null, false);
+    }
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('a[data-tab], a[data-sub]');
+      if (!a) return;
+      e.preventDefault();
+      if (a.dataset.tab) { history.replaceState(null, '', '#' + a.dataset.tab); select(a.dataset.tab, null, true); }
+      else { history.replaceState(null, '', '#' + a.dataset.sub); var el = document.getElementById(a.dataset.sub); var hh = ($('.site-header') || {}).offsetHeight || 0; window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - hh - bar.offsetHeight - 16, behavior: 'smooth' }); }
+    });
+    window.addEventListener('hashchange', function () { fromHash(true); });
+    fromHash(!!location.hash);
   }
 
   function drawLinks(links) {
