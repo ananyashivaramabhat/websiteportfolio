@@ -7,60 +7,48 @@
       "when": "May 2026 – Present",
       "year": "2026",
       "where": "Santa Clara, CA",
-      "summary": "Embedded firmware in C on STM32 for optical engine modules: secure boot and field update, drivers and hardware bring-up, control loops, telemetry and calibration.",
+      "summary": "Embedded firmware for silicon photonic integrated circuits. Now contributing to firmware for the company's next-generation product.",
       "stack": [
         "STM32",
         "Bare-metal C",
-        "Linker scripts",
-        "arm-none-eabi-gcc",
+        "CMIS",
+        "ELSFP",
         "I2C",
-        "SPI",
         "UART",
-        "Python"
+        "Python",
+        "OSA"
       ],
       "highlights": [
         {
-          "title": "Secure bootloader",
-          "visual": "memmap",
-          "points": [
-            "Built the secure bootloader for the optical engine boards end to end.",
-            "Encrypted firmware images, authenticated and decrypted at boot.",
-            "Dual-bank flash layout with run/commit and automatic rollback handling, partitioned with custom linker scripts."
-          ]
-        },
-        {
-          "title": "Field firmware update",
-          "visual": "bus",
-          "points": [
-            "Implemented firmware image management over the module's I2C management interface, following an industry-standard update flow.",
-            "Wrote Python host tooling for image download, commit and version query, validated against host switch software."
-          ]
-        },
-        {
-          "title": "Hardware bring-up",
-          "visual": "drivers",
-          "points": [
-            "Owned STM32 board bring-up on a new optical module.",
-            "Bare-metal drivers for I2C, SPI, UART, ADC, DAC, GPIO and timers.",
-            "UART logging for control-loop and fault visibility."
-          ]
-        },
-        {
-          "title": "Control and telemetry",
+          "title": "Photonics bring-up and control",
           "visual": "loop",
           "points": [
-            "Closed-loop control firmware for the module's optical and thermal components.",
-            "Thermistor-feedback thermal loop holding the module within spec.",
-            "Case-temperature telemetry with alarm and warning thresholds, exposed to the host over the management interface."
+            "Firmware bring-up and closed-loop control for photonic components on a CMIS-compliant ELSFP optical module.",
+            "Worked with MZI meshes, ring resonators, comb lasers, SOAs, photodiodes and TECs, with OSA measurements in the lab.",
+            "Implemented MZI tuning and calibration firmware, optical power equalization routines and thermistor-based temperature control loops."
           ]
         },
         {
-          "title": "Calibration and data",
+          "title": "Optical power monitoring",
           "visual": "calib",
           "points": [
-            "Derived ADC/DAC code-to-SI conversions by reading the PCB schematics and layout.",
-            "Scaled bring-up to production with per-unit calibration stored in flash and self-applied at boot.",
-            "Streamed measurement sweeps through a firmware ring buffer read out over I2C."
+            "Developed photodiode tap ratio calibration and control, converting monitor photodiode readings into real-time optical power for closed-loop feedback.",
+            "Derived ADC/DAC conversions from PCB schematics and layout for accurate hardware interfacing."
+          ]
+        },
+        {
+          "title": "Secure bootloader and field update",
+          "visual": "update",
+          "points": [
+            "Built a secure bootloader with encrypted firmware images, enabling in-field updates over the host interface.",
+            "Implemented CMIS-standard firmware download and worked across the full update flow, from image transfer to on-device decryption and programming."
+          ]
+        },
+        {
+          "title": "Data acquisition and debug",
+          "visual": "bus",
+          "points": [
+            "Developed data acquisition and debug infrastructure, including I2C data readout to Python tooling and UART logging."
           ]
         }
       ]
