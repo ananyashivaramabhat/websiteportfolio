@@ -1,0 +1,551 @@
+{
+  "loadTest": [
+    {
+      "label": "10%",
+      "mA": 50,
+      "V": 4.93
+    },
+    {
+      "label": "50%",
+      "mA": 250,
+      "V": 4.91
+    },
+    {
+      "label": "100%",
+      "mA": 500,
+      "V": 4.88
+    },
+    {
+      "label": "120%",
+      "mA": 600,
+      "V": 4.87
+    }
+  ],
+  "bugs": [
+    {
+      "title": "Intermittent \"Error 102\" bricked state",
+      "area": "MCU / flashing",
+      "symptom": "The SiWx917 would drop into a timed-out, unresponsive state during development with no clear trigger.",
+      "cause": "Never fully root-caused.",
+      "fix": "Learned to recognize the symptom early and recover with a J-Link mass-erase and reflash instead of debugging downstream effects."
+    },
+    {
+      "title": "Datasheet I2C pins dead on silicon",
+      "area": "PCB / I2C",
+      "symptom": "Pins 54 and 55, listed as valid I2C pins, produced no bus activity on our board.",
+      "cause": "The silicon did not match the datasheet pin assignment.",
+      "fix": "Confirmed alternates on a logic analyzer, rerouted the bus to pins 6 and 7 with firmware reconfiguration and bodge wires."
+    },
+    {
+      "title": "Camera pulling the sensor bus to 5 V",
+      "area": "Power domains / I2C",
+      "symptom": "The ArduCam OV2640 ships with onboard pull-ups that tie SDA and SCL to 5 V.",
+      "cause": "The SHT41 and VEML7700 sharing the bus are 3.3 V parts and cannot tolerate 5 V.",
+      "fix": "Moved the camera to a second SiWx917 board on its own I2C segment, which became the two-board architecture."
+    },
+    {
+      "title": "5 V rail would not come up",
+      "area": "Power",
+      "symptom": "On one assembled board the TPS63802 rail stayed down under any load; an identical second board worked.",
+      "cause": "A faulty boost IC, not a layout or design defect.",
+      "fix": "Replaced the IC. Bringing up two boards in parallel is what made the difference between a part defect and a design defect visible."
+    },
+    {
+      "title": "Fan running weak and inconsistent",
+      "area": "Actuator driver",
+      "symptom": "The original high-side switch never fully enhanced the MOSFET.",
+      "cause": "Insufficient gate drive in the high-side topology.",
+      "fix": "Reworked to a low-side AO3400A N-channel driver, giving clean on/off and PWM control."
+    },
+    {
+      "title": "SDK 3.5.2 to 4.0.0 silent failures",
+      "area": "Firmware / SDK",
+      "symptom": "Wi-Fi and peripherals failed without errors after the WiseConnect upgrade; one flashing failure bricked a board.",
+      "cause": "Incorrect feature bit maps, renamed APIs and changed join-callback signatures.",
+      "fix": "Worked from release notes and example projects, recovered the board with a J-Link mass-erase, and audited CMSIS-RTOS2 stack and priority settings."
+    },
+    {
+      "title": "MQTT racing ahead of Wi-Fi association",
+      "area": "RTOS / networking",
+      "symptom": "The MQTT task tried to connect before the network was up.",
+      "cause": "No synchronization between Wi-Fi join and the MQTT task.",
+      "fix": "Added a Wi-Fi-up event group that gates the MQTT task, and iterated on OTA chunk handling and post-update reboot."
+    }
+  ],
+  "requirements": [
+    {
+      "id": "HRS-01",
+      "d": "SiWG917Y121MGABA MCU, integrated Wi-Fi, Cortex-M4 at 180 MHz",
+      "s": "met",
+      "n": "Device ID readout in Simplicity Studio; firmware runs at configured clock"
+    },
+    {
+      "id": "HRS-02",
+      "d": "Single-cell Li-ion, at least 8 h without USB",
+      "s": "partial",
+      "n": "Battery operation confirmed; full 8 h run not formally measured (~1 h runs clean)"
+    },
+    {
+      "id": "HRS-03",
+      "d": "BQ24075 power path: USB charging, zero-dropout switchover, no reset",
+      "s": "met",
+      "n": "Hot-unplugged USB while running; MCU continued without reset"
+    },
+    {
+      "id": "HRS-04",
+      "d": "3.3 V buck with under 50 mV ripple",
+      "s": "met",
+      "n": "TPS62082 measured on scope under load"
+    },
+    {
+      "id": "HRS-05",
+      "d": "5 V rail with under 100 mV ripple",
+      "s": "partial",
+      "n": "TPS63802 within spec; one board needed a boost IC replacement"
+    },
+    {
+      "id": "HRS-06",
+      "d": "SHT41 temperature and humidity sensor at datasheet accuracy",
+      "s": "met",
+      "n": "Cross-checked against a reference thermometer"
+    },
+    {
+      "id": "HRS-07",
+      "d": "SHT41 on I2C at 400 kHz, address 0x44",
+      "s": "met",
+      "n": "ACKs at 0x44 on logic analyzer; bus rerouted from pins 54/55 to 6/7"
+    },
+    {
+      "id": "HRS-08",
+      "d": "VEML ambient light sensor, I2C 400 kHz, detect light within 100 ms",
+      "s": "met",
+      "n": "Light-step response well under 100 ms on logic analyzer"
+    },
+    {
+      "id": "HRS-09",
+      "d": "2 MP ArduCam over SPI at 8 MHz or faster",
+      "s": "partial",
+      "n": "Runs on a separate SiWx917 board due to 5 V pull-ups; QQVGA to fit RAM"
+    },
+    {
+      "id": "HRS-10",
+      "d": "Camera captures only on triggered events",
+      "s": "met",
+      "n": "Scheduled/event capture from the camera task; no streaming"
+    },
+    {
+      "id": "HRS-11",
+      "d": "GPIO-controlled white LED active only during capture",
+      "s": "met",
+      "n": "LED timing aligned with capture window"
+    },
+    {
+      "id": "HRS-12",
+      "d": "5 V fan with PWM at 25 kHz or higher",
+      "s": "met",
+      "n": "Fan controlled by PWM at specified frequency"
+    },
+    {
+      "id": "HRS-13",
+      "d": "Fan driver handling at least 500 mA",
+      "s": "met",
+      "n": "Reworked to low-side AO3400A for proper gate drive"
+    },
+    {
+      "id": "HRS-14",
+      "d": "Piezo humidifier with reservoir, MCU controlled",
+      "s": "met",
+      "n": "Mist generation observed when activated"
+    },
+    {
+      "id": "HRS-15",
+      "d": "Dedicated piezo driver isolated from MCU logic",
+      "s": "met",
+      "n": "Driver isolates MCU from piezo load"
+    },
+    {
+      "id": "HRS-16",
+      "d": "OTA trigger from Node-RED; ISP and reset buttons on PCB",
+      "s": "met",
+      "n": "OTA verified via MQTT; ISP/reset used for programming and recovery"
+    },
+    {
+      "id": "HRS-17",
+      "d": "Charge status via GPIO interrupt from BQ24075 CHG/PG",
+      "s": "not",
+      "n": "CHG/PG routed to LEDs, not MCU GPIOs. Rev 2 change"
+    },
+    {
+      "id": "HRS-18",
+      "d": "Actuators isolated from MCU logic",
+      "s": "met",
+      "n": "Both driven through dedicated driver stages"
+    },
+    {
+      "id": "HRS-19",
+      "d": "4-layer stackup: signal / GND / power / signal",
+      "s": "met",
+      "n": "Fabricated as specified; final outline 80.5 × 45.5 mm, 0.62 mm thick"
+    },
+    {
+      "id": "HRS-20",
+      "d": "Onboard regulation for all rails from the Li-ion cell",
+      "s": "met",
+      "n": "TPS62082 3.3 V buck and TPS63802 5 V buck-boost, both from the battery rail"
+    },
+    {
+      "id": "SRS-01",
+      "d": "FreeRTOS with sensor, camera, MQTT and control tasks at distinct priorities",
+      "s": "met",
+      "n": "Verified in FreeRTOS task list"
+    },
+    {
+      "id": "SRS-02",
+      "d": "Non-blocking sensor sampling at least every 30 s",
+      "s": "met",
+      "n": "Periodic reads observed on dashboard"
+    },
+    {
+      "id": "SRS-03",
+      "d": "Compare readings to medication-specific ranges every cycle",
+      "s": "met",
+      "n": "Runs every read cycle in sensor task"
+    },
+    {
+      "id": "SRS-04",
+      "d": "Fan on within 5 s of over-temperature",
+      "s": "met",
+      "n": "Warmed enclosure with heat source; fan engaged in window"
+    },
+    {
+      "id": "SRS-05",
+      "d": "Humidifier on within 5 s of low humidity, off when in range",
+      "s": "met",
+      "n": "Engaged and disengaged at threshold crossings"
+    },
+    {
+      "id": "SRS-06",
+      "d": "Light alert after 60 s of continuous exposure",
+      "s": "met",
+      "n": "Lid held open; alert on ambrx/light/alert"
+    },
+    {
+      "id": "SRS-07",
+      "d": "Caregiver notification within 10 s if actuators cannot correct",
+      "s": "met",
+      "n": "Forced sustained breach; alert on dashboard in window"
+    },
+    {
+      "id": "SRS-08",
+      "d": "LED on immediately before capture, off immediately after",
+      "s": "met",
+      "n": "Timing aligned with capture window"
+    },
+    {
+      "id": "SRS-09",
+      "d": "Capture at least every 60 s or on removal event",
+      "s": "met",
+      "n": "Scheduled captures at configured interval"
+    },
+    {
+      "id": "SRS-10",
+      "d": "On-device ML pill count within 2 s of capture",
+      "s": "partial",
+      "n": "Classical HSV blob detection instead of ML; within 2 s, accuracy sensitive to color and lighting"
+    },
+    {
+      "id": "SRS-11",
+      "d": "Pill count passed to MQTT task via FreeRTOS queue",
+      "s": "met",
+      "n": "CV task to MQTT task via queue"
+    },
+    {
+      "id": "SRS-12",
+      "d": "Restock alert below threshold (default 5 pills)",
+      "s": "met",
+      "n": "Alert visible in Node-RED"
+    },
+    {
+      "id": "SRS-13",
+      "d": "All telemetry to broker within 100 ms of read",
+      "s": "partial",
+      "n": "Reliable and sub-second; 100 ms not formally instrumented"
+    },
+    {
+      "id": "SRS-14",
+      "d": "Fan responds within 1 s to ambrx/cooling/control",
+      "s": "met",
+      "n": "Repeated dashboard toggles within window"
+    },
+    {
+      "id": "SRS-15",
+      "d": "Actuation never blocks sensing, CV or MQTT",
+      "s": "met",
+      "n": "No missed reads or publishes during actuation"
+    },
+    {
+      "id": "SRS-16",
+      "d": "Inter-task communication only via queues and semaphores",
+      "s": "met",
+      "n": "Queues, semaphores and event groups throughout"
+    },
+    {
+      "id": "SRS-17",
+      "d": "Charge status changes via GPIO interrupt, no polling",
+      "s": "not",
+      "n": "Blocked by HRS-17 routing. Rev 2"
+    },
+    {
+      "id": "SRS-18",
+      "d": "Wi-Fi auto-reconnect with exponential backoff, 30 s cap",
+      "s": "partial",
+      "n": "Reconnect usually succeeds; backoff not formally implemented"
+    },
+    {
+      "id": "SRS-19",
+      "d": "OTA command acknowledged and dispatched within 1 s",
+      "s": "met",
+      "n": "Image fetched from Azure blob, flashed, rebooted"
+    },
+    {
+      "id": "SRS-20",
+      "d": "Timestamped alert logging to broker",
+      "s": "partial",
+      "n": "Alerts reliable; timestamp added at Node-RED receive time, not on device"
+    }
+  ],
+  "links": [
+    {
+      "label": "Video demo",
+      "href": ""
+    },
+    {
+      "label": "Altium 365 design",
+      "href": ""
+    },
+    {
+      "label": "Main-board firmware",
+      "href": ""
+    },
+    {
+      "label": "Camera-node firmware",
+      "href": ""
+    }
+  ],
+  "media": {
+    "hero": [
+      {
+        "src": "img/ambientrx/final-assembly.jpg",
+        "caption": "Final build with the electronics inside the enclosure",
+        "wide": true
+      }
+    ],
+    "arch": [
+      {
+        "src": "img/ambientrx/block-diagram.png",
+        "caption": "Block diagram from the design review",
+        "wide": true,
+        "light": true
+      }
+    ],
+    "board": [
+      {
+        "src": "img/ambientrx/pcba-top.jpg",
+        "caption": "Assembled PCBA, top"
+      },
+      {
+        "src": "img/ambientrx/pcba-bottom.jpg",
+        "caption": "Assembled PCBA, bottom"
+      },
+      {
+        "src": "img/ambientrx/altium-2d-top.jpg",
+        "caption": "Altium layout, top"
+      },
+      {
+        "src": "img/ambientrx/altium-2d-bottom.jpg",
+        "caption": "Altium layout, bottom"
+      },
+      {
+        "src": "img/ambientrx/altium-3d-top.jpg",
+        "caption": "Altium 3D, top"
+      },
+      {
+        "src": "img/ambientrx/altium-3d-bottom.jpg",
+        "caption": "Altium 3D, bottom"
+      }
+    ],
+    "thermal": [
+      {
+        "src": "img/ambientrx/thermal-10.jpg",
+        "caption": "10% load · ~50 mA · 21.4 °C",
+        "tall": true
+      },
+      {
+        "src": "img/ambientrx/thermal-50.jpg",
+        "caption": "50% load · ~250 mA · 21.5 °C",
+        "tall": true
+      },
+      {
+        "src": "img/ambientrx/thermal-100.jpg",
+        "caption": "100% load · ~500 mA · 21.5 °C",
+        "tall": true
+      },
+      {
+        "src": "img/ambientrx/thermal-120.jpg",
+        "caption": "120% load · ~600 mA · 21.8 °C",
+        "tall": true
+      }
+    ],
+    "cloud": [
+      {
+        "src": "img/ambientrx/nodered-dashboard.png",
+        "caption": "Caregiver dashboard: environment, light, controls and pill tracking",
+        "wide": true,
+        "light": true
+      },
+      {
+        "src": "img/ambientrx/nodered-pill-tracker.png",
+        "caption": "Pill tracker card with stock level",
+        "light": true
+      },
+      {
+        "src": "img/ambientrx/nodered-flow-sensors.png",
+        "caption": "Node-RED flow: sensor telemetry and alerts",
+        "light": true
+      },
+      {
+        "src": "img/ambientrx/nodered-flow-pills.png",
+        "caption": "Node-RED flow: pill count and pillbox image",
+        "light": true
+      },
+      {
+        "src": "img/ambientrx/nodered-flow-ota.png",
+        "caption": "Node-RED flow: OTA trigger",
+        "light": true
+      }
+    ],
+    "enclosure": [
+      {
+        "src": "img/ambientrx/enclosure-1.jpg",
+        "caption": "Enclosure, top",
+        "tall": true
+      },
+      {
+        "src": "img/ambientrx/enclosure-2.jpg",
+        "caption": "Enclosure, side",
+        "tall": true
+      },
+      {
+        "src": "img/ambientrx/enclosure-3.jpg",
+        "caption": "Enclosure, front with status window",
+        "tall": true
+      }
+    ],
+    "schematics": [
+      {
+        "src": "img/ambientrx/schematics/top-level.jpg",
+        "caption": "Top level: power, USB protection, sensors, connectors",
+        "light": true
+      },
+      {
+        "src": "img/ambientrx/schematics/power-architecture.jpg",
+        "caption": "Power architecture: TPS62082 3.3 V buck, TPS63802 5 V buck-boost",
+        "light": true
+      },
+      {
+        "src": "img/ambientrx/schematics/battery-charger.jpg",
+        "caption": "BQ24075 charger and strapping jumpers",
+        "light": true
+      },
+      {
+        "src": "img/ambientrx/schematics/wireless-mcu.jpg",
+        "caption": "SiWG917Y module: power, RF, buttons, LEDs, debug",
+        "light": true
+      },
+      {
+        "src": "img/ambientrx/schematics/external-memory.jpg",
+        "caption": "microSD in SPI mode with ECLAMP2410",
+        "light": true
+      },
+      {
+        "src": "img/ambientrx/schematics/sht41.jpg",
+        "caption": "SHT41 temperature and humidity",
+        "light": true
+      },
+      {
+        "src": "img/ambientrx/schematics/light-sensor.jpg",
+        "caption": "VEML7700 ambient light",
+        "light": true
+      },
+      {
+        "src": "img/ambientrx/schematics/connectors.jpg",
+        "caption": "Camera, fan and piezo connectors with fan driver",
+        "light": true
+      }
+    ],
+    "layers": [
+      {
+        "src": "img/ambientrx/layers/l1-top.png",
+        "caption": "L1 · Top signal"
+      },
+      {
+        "src": "img/ambientrx/layers/l2-gnd.png",
+        "caption": "L2 · GND plane"
+      },
+      {
+        "src": "img/ambientrx/layers/l3-power.png",
+        "caption": "L3 · Power plane"
+      },
+      {
+        "src": "img/ambientrx/layers/l4-bottom.png",
+        "caption": "L4 · Bottom signal"
+      }
+    ],
+    "fab": [
+      {
+        "src": "img/ambientrx/layers/stackup-drawing.jpg",
+        "caption": "Layer stack drawing",
+        "light": true
+      },
+      {
+        "src": "img/ambientrx/layers/drill-drawing.jpg",
+        "caption": "Drill drawing and drill table",
+        "light": true
+      },
+      {
+        "src": "img/ambientrx/layers/assembly-drawing.jpg",
+        "caption": "Assembly drawing, top and bottom views",
+        "light": true,
+        "wide": true
+      }
+    ],
+    "altium": [
+      {
+        "src": "img/ambientrx/altium/altium-l1-top.png",
+        "caption": "Top layer"
+      },
+      {
+        "src": "img/ambientrx/altium/altium-l2-gnd.png",
+        "caption": "GND layer"
+      },
+      {
+        "src": "img/ambientrx/altium/altium-l3-power.png",
+        "caption": "Power layer"
+      },
+      {
+        "src": "img/ambientrx/altium/altium-l4-bottom.png",
+        "caption": "Bottom layer"
+      }
+    ],
+    "bench": [
+      {
+        "src": "img/ambientrx/bench/bench-bodge.jpg",
+        "caption": "Bring-up on the bench: the assembled board with bodge wires and probe clips"
+      },
+      {
+        "src": "img/ambientrx/bench/bench-5v-rail.jpg",
+        "caption": "Checking the 5 V rail on USB power: 5.13 V at the multimeter"
+      }
+    ]
+  }
+}
